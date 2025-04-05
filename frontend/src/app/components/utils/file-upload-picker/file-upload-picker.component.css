@@ -1,0 +1,39 @@
+.upload-section {
+  text-align: center;
+
+  .upload-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px dashed #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+
+    mat-icon {
+      font-size: 30px;
+      width: 30px;
+      color: #757575;
+    }
+
+    span {
+      margin-top: 8px;
+      color: #757575;
+    }
+  }
+
+  .file-name {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #424242;
+    white-space: nowrap;       /* Empêche le retour à la ligne */
+    overflow: hidden;          /* Masque le texte qui dépasse */
+    text-overflow: ellipsis;   /* Ajoute les "..." */
+    max-width: 100px;
+  }
+}

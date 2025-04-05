@@ -1,0 +1,81 @@
+<h2 mat-dialog-title>Importer un batch de paiements</h2>
+
+<mat-dialog-content>
+  <mat-horizontal-stepper [linear]="true" #stepper>
+    <!-- Étape 0 -->
+    <mat-step [stepControl]="step0Form" [editable]="false">
+      <form [formGroup]="step0Form">
+        <ng-template matStepLabel>Nom de l'import</ng-template>
+        <div class="stepper-content">
+          <mat-form-field appearance="outline" style="width:100%">
+            <mat-label>Nom de l'import</mat-label>
+            <input matInput formControlName="importName" />
+          </mat-form-field>
+        </div>
+        <div class="actions">
+          <button mat-button [disabled]="!step0Form.valid" (click)="validateStep(0)">Suivant</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Étape 1 -->
+    <mat-step [stepControl]="step1Form" [editable]="false">
+      <form [formGroup]="step1Form">
+
+        <ng-template matStepLabel>Paiements Loic</ng-template>
+
+        <div class="flex flex-row gap-10 stepper-content">
+          <div class="flex-column">
+            <mat-label>Fichier de paiement</mat-label>
+            <app-file-upload-picker (fileSelected)="onFileSelected($event, UploadFileType.PAYMENT)"></app-file-upload-picker>
+          </div>
+          <div class="flex-column">
+            <mat-label>Fichier de récupération</mat-label>
+            <app-file-upload-picker (fileSelected)="onFileSelected($event,UploadFileType.RECOVERY)"></app-file-upload-picker>
+          </div>
+          <div class="flex-column">
+            <mat-label>Fichier d'erreur</mat-label>
+            <app-file-upload-picker (fileSelected)="onFileSelected($event,UploadFileType.ERROR)"></app-file-upload-picker>
+          </div>
+        </div>
+
+        <div class="actions">
+          <span *ngIf="isImporting">
+            {{ progressInfo.task }}
+            <mat-progress-bar #fileProgress mode="determinate" [value]="progressInfo.progress" style="width: 200px;"></mat-progress-bar>
+          </span>
+          <button mat-button [disabled]="!step1Form.valid || isImporting" (click)="importLoic()">Suivant</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Étape 2 -->
+    <mat-step [stepControl]="step2Form" [editable]="false">
+      <form [formGroup]="step2Form">
+        <ng-template matStepLabel>Paiements MFX</ng-template>
+
+        <p class="stepper-content">Tu peux ici prévisualiser les données (extrait du fichier).</p>
+
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Tape "OK" pour confirmer</mat-label>
+          <input matInput formControlName="confirmation" />
+        </mat-form-field>
+
+        <div>
+          <button mat-button matStepperNext [disabled]="!step2Form.valid">Suivant</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Étape 3 -->
+    <mat-step [editable]="false">
+      <ng-template matStepLabel>Confirmation</ng-template>
+      <p>Tu es prêt à importer ce batch de paiements.</p>
+
+      <div>
+        <button mat-raised-button color="primary" (click)="submit()">Importer</button>
+        <button mat-button (click)="close()">Annuler</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>

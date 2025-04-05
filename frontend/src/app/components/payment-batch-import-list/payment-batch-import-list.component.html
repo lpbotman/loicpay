@@ -1,0 +1,7 @@
+
+
+<button mat-raised-button (click)="openImportWizard()">Importer un batch de paiements</button>
+
+<mat-card appearance="outlined" *ngFor="let batch of batchPayments">
+  <mat-card-content>{{ batch.name }}</mat-card-content>
+</mat-card>
