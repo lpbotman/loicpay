@@ -54,12 +54,12 @@ class LoicRecovery {
                         data[2],                      // inss
                         parseInt(data[3]) || null,   // refMonth
                         data[4],                      // payMonth
-                        parseFloat(data[5]) || null,  // recovTotal
-                        parseFloat(data[6]) || null,  // recovBalance
+                        data[5] ? parseFloat(data[5].replace(',', '.')) : null,  // recovTotal
+                        data[6] ? parseFloat(data[6].replace(',', '.')) : null,  // recovBalance
                         data[7],                      // recovValidDate
                         data[8],                      // recovType
                         data[9],                      // c31
-                        parseFloat(data[10]) || null, // recovWithHoldingTax
+                        data[10] ? parseFloat(data[10].replace(',', '.')) : null, // recovWithHoldingTax
                         data[11],                     // debtNbr
                         data[12],                     // bban
                         data[13],                     // iban
@@ -68,8 +68,8 @@ class LoicRecovery {
                         data[16],                     // competentEntity
                         data[17],                     // closingDate
                         data[18],                     // recovTicketNbr
-                        parseFloat(data[19]) || null, // recovNetAmount
-                        parseFloat(data[20]) || null, // recovGrossAmount
+                        data[19] ? parseFloat(data[19].replace(',', '.')) : null, // recovNetAmount
+                        data[20] ? parseFloat(data[20].replace(',', '.')) : null, // recovGrossAmount
                         data[21],                     // breakerAddress
                         data[22],                     // breakerPostalCode
                         data[23],                     // breakerCityName

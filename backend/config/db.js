@@ -65,6 +65,10 @@ db.serialize(() => {
     `);
 
     db.run(`
+        CREATE INDEX IF NOT EXISTS idx_loic_payment_batch_ssin_refmonth ON loic_payment (id_batch_payment, ssin, refMonth);
+    `);
+
+    db.run(`
     CREATE TABLE IF NOT EXISTS loic_recovery (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         id_batch_payment INTEGER,
@@ -157,6 +161,10 @@ db.serialize(() => {
 
     db.run(`
         CREATE INDEX IF NOT EXISTS idx_mfx_payment_ssin ON mfx_payment (ssin);
+    `);
+
+    db.run(`
+        CREATE INDEX IF NOT EXISTS idx_mfx_payment_batch_ssin_refmonth ON mfx_payment (id_batch_payment, ssin, refMonth);
     `);
 
     db.run(`

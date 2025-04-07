@@ -13,6 +13,7 @@ import {
   MatHeaderRowDef,
   MatRow, MatRowDef, MatTable
 } from "@angular/material/table";
+import {FlexibleNumberPipe} from "../../../pipes/flexible-number.pipe";
 
 @Component({
   selector: 'app-match-payment-plan',
@@ -29,7 +30,8 @@ import {
     MatRowDef,
     MatTable,
     NgIf,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    FlexibleNumberPipe
   ],
   templateUrl: './match-payment-plan.component.html',
   styleUrl: './match-payment-plan.component.css'
@@ -38,7 +40,7 @@ export class MatchPaymentPlanComponent implements OnInit, OnDestroy{
 
   @Input() batchId!: number;
 
-  displayedColumns: string[] = ['desc', 'percent', 'value'];
+  displayedColumns: string[] = ['desc', 'value'];
   dataSource: { desc: string, value: number, percent?: number }[] = [];
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;

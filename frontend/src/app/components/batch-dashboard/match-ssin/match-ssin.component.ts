@@ -12,6 +12,7 @@ import {
 import {DecimalPipe, NgIf} from "@angular/common";
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
 import {BaseChartDirective} from "ng2-charts";
+import {FlexibleNumberPipe} from "../../../pipes/flexible-number.pipe";
 
 @Component({
   selector: 'app-match-ssin',
@@ -28,7 +29,8 @@ import {BaseChartDirective} from "ng2-charts";
     MatTable,
     DecimalPipe,
     NgIf,
-    BaseChartDirective
+    BaseChartDirective,
+    FlexibleNumberPipe
   ],
   templateUrl: './match-ssin.component.html',
   styleUrl: './match-ssin.component.css'
@@ -37,7 +39,7 @@ export class MatchSsinComponent implements OnInit, OnDestroy{
 
   @Input() batchId!: number;
 
-  displayedColumns: string[] = ['desc', 'percent', 'value'];
+  displayedColumns: string[] = ['desc', 'value'];
   dataSource: { desc: string, value: number, percent?: number }[] = [];
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;

@@ -13,5 +13,6 @@ router.post('/batch/new', PaymentBatchController.createBatchPayment);
 router.get('/batch/all', PaymentBatchController.getAllBatchPayment);
 router.get('/reporting/matchSsin', ReportingController.getMatchSSIN);
 router.get('/reporting/matchPaymentPlan', ReportingController.getMatchPaymentPlan);
+router.get('/reporting/matchPaymentAmount', ReportingController.getAmountDiff);
 
 module.exports = router;

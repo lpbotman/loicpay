@@ -1,3 +1,7 @@
+<div class="header">
+  <p>Correspondance des plans de paiement</p>
+</div>
+
 <div class="container flex flex-row">
   <div style="display: block;">
     <canvas
@@ -14,14 +18,15 @@
       <td mat-cell *matCellDef="let element"> {{element.desc}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="percent">
-      <th mat-header-cell *matHeaderCellDef> Pourcentage </th>
-      <td mat-cell *matCellDef="let element"> {{element.percent | number:'1.2-2'}} <span *ngIf="element.percent">%</span> </td>
-    </ng-container>
-
     <ng-container matColumnDef="value">
       <th mat-header-cell *matHeaderCellDef> Total </th>
-      <td mat-cell *matCellDef="let element"> {{element.value}} </td>
+      <td mat-cell *matCellDef="let element">
+        @if (element.percent) {
+          {{element.percent | number:'1.2-2'}}% ({{element.value | flexibleNumber}})
+        } @else {
+          {{element.value | flexibleNumber}}
+        }
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -200,20 +200,18 @@ export class ImportPaymentBatchDialogComponent {
     return new Promise((resolve, reject) => {
       Papa.parse(chunk.join('\n'), {
         complete: (result) => {
+          console.log('Données envoyées avec succès:', result);
           this.fileUploadService.uploadParsedData(this.currentBatchId, result.data, uploadFileType).subscribe({
             next: (response) => {
-              console.log('Données envoyées avec succès:', response);
               this.progressInfo.progress += chunk.length / this.progressInfo.total * 100;
               resolve();
             },
             error: (error) => {
-              console.error('Erreur lors de l\'envoi des données', error);
               reject(error);
             }
           });
         },
         error: (error: any) => {
-          console.error('Erreur lors du parsing du chunk', error);
           reject(error);
         }
       });

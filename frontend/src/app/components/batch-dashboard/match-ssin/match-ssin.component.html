@@ -1,32 +1,38 @@
-<div class="container flex flex-row">
-  <div style="display: block;">
-    <canvas
-      baseChart
-      [type]="pieChartType"
-      [data]="pieChartData"
-      [options]="pieChartOptions">
-    </canvas>
+<div class="header">
+  <p>Correspondance des citoyens</p>
+</div>
+<div class="container flex flex-column">
+
+  <div class="flex flex-row">
+    <div style="display: block;">
+      <canvas
+        baseChart
+        [type]="pieChartType"
+        [data]="pieChartData"
+        [options]="pieChartOptions">
+      </canvas>
+    </div>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="desc">
+        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <td mat-cell *matCellDef="let element"> {{element.desc}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef> Total </th>
+        <td mat-cell *matCellDef="let element">
+          @if (element.percent) {
+            {{element.percent | flexibleNumber}}% ({{element.value | flexibleNumber}})
+          } @else {
+            {{element.value | flexibleNumber}}
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
   </div>
-
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-    <ng-container matColumnDef="desc">
-      <th mat-header-cell *matHeaderCellDef> Description </th>
-      <td mat-cell *matCellDef="let element"> {{element.desc}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="percent">
-      <th mat-header-cell *matHeaderCellDef> Pourcentage </th>
-      <td mat-cell *matCellDef="let element"> {{element.percent | number:'1.2-2'}} <span *ngIf="element.percent">%</span> </td>
-    </ng-container>
-
-    <ng-container matColumnDef="value">
-      <th mat-header-cell *matHeaderCellDef> Total </th>
-      <td mat-cell *matCellDef="let element"> {{element.value}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-
 
 </div>
