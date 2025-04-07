@@ -10,3 +10,7 @@
 .stepper-content {
   padding-top: 24px;
 }
+
+.file-box {
+  flex: 1;
+}

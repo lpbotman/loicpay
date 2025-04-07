@@ -1,18 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {PaymentBatchService} from "../../services/payment-batch.service";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgForOf} from "@angular/common";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {MatDialog} from "@angular/material/dialog";
 import {ImportPaymentBatchDialogComponent} from "../import-payment-batch-dialog/import-payment-batch-dialog.component";
-import {MatButton} from "@angular/material/button";
+import {MatIcon} from "@angular/material/icon";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-payment-batch-import-list',
   imports: [
     MatCard,
     MatCardContent,
-    MatButton,
     NgForOf,
+    MatIcon,
   ],
   templateUrl: './payment-batch-import-list.component.html',
   standalone: true,
@@ -23,7 +24,9 @@ export class PaymentBatchImportListComponent implements OnInit {
   stats: any;
   batchPayments: any[] = [];
 
-  constructor(private paymentBatchService: PaymentBatchService, private importDialog: MatDialog) {}
+  constructor(private paymentBatchService: PaymentBatchService,
+              private router: Router) {
+  }
 
   ngOnInit(): void {
     this.loadAllBatchPayment();
@@ -33,14 +36,9 @@ export class PaymentBatchImportListComponent implements OnInit {
     this.selectedFile = event.target.files[0];
   }
 
-  openImportWizard() {
-    this.importDialog.open(ImportPaymentBatchDialogComponent, {
-      width: '800px',
-      minHeight: '400px',
-      maxWidth: '800px',
-    });
+  openBatchImport(id: number) {
+    this.router.navigate(['/batch-dashboard', id]);
   }
-
 
   private loadAllBatchPayment() {
     this.paymentBatchService.getAllBatchPayment().subscribe((response) => {

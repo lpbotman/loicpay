@@ -15,7 +15,4 @@ export class PaymentBatchService {
     return this.http.get('http://localhost:3000/api/batch/all');
   }
 
-  getStats() {
-    return this.http.get<{ total: number }>('http://localhost:3000/stats');
-  }
 }

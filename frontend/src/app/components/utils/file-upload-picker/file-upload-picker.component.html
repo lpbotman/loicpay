@@ -1,28 +1,14 @@
-<div class="upload-section">
 
-    @if (file) {
-      <label for="fileUploaded" class="upload-label">
-        <mat-icon>cloud_done</mat-icon>
-        <span>Cliquez pour changer de fichier</span>
-        <input
-          id="fileUploaded"
-          type="file"
-          accept=".csv"
-          (change)="onFileSelected($event)"
-          hidden
-        />
-      </label>
-    } @else {
-      <label for="fileUpload" class="upload-label">
-        <mat-icon>cloud_upload</mat-icon>
-        <span>Cliquez pour sélectionner un fichier</span>
-        <input
-          id="fileUpload"
-          type="file"
-          accept=".csv"
-          (change)="onFileSelected($event)"
-          hidden
-        />
-      </label>
-    }
+<div class="upload-section">
+  <label [for]="fileUpload" class="upload-label">
+    <mat-icon>{{ isFileSelected ? 'cloud_done' : 'cloud_upload'}}</mat-icon>
+    <span>{{ isFileSelected ? 'Fichier sélectionné' : 'Cliquez pour sélectionner un fichier'}}</span>
+    <input
+      [id]="fileUpload"
+      type="file"
+      accept=".csv,.txt"
+      (change)="onFileSelected($event)"
+      [hidden]="true"
+    />
+  </label>
 </div>

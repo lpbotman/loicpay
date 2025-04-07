@@ -1,0 +1,19 @@
+.container {
+  margin: 20px;
+}
+
+mat-card {
+  margin: 10px;
+  border: 0;
+  cursor: pointer;
+}
+
+.new-batch-button {
+  margin: 10px;
+}
+
+mat-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -10,6 +10,8 @@
     padding: 16px;
     border-radius: 8px;
     transition: background-color 0.3s;
+    min-height: 75px;
+    min-width: 180px;
 
     &:hover {
       background-color: #f5f5f5;

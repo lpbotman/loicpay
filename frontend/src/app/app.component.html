@@ -1,2 +1,13 @@
+<div class="header">
+  <div class="flex flex-row">
+    <img src="assets/images/logo-fr.svg" alt="logo" class="logo pointer" (click)="goHome()">
+  </div>
 
-<router-outlet></router-outlet>
+  <div class="flex flex-end new-batch-button">
+    <button mat-fab extended (click)="openImportWizard()">Importer un batch de paiements</button>
+  </div>
+</div>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>
+

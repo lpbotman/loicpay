@@ -52,7 +52,7 @@ class LoicRecovery {
                         parseInt(data[0]) || null,   // unemploymentEntity
                         data[1],                      // breakerName
                         data[2],                      // inss
-                        data[3],                      // refMonth
+                        parseInt(data[3]) || null,   // refMonth
                         data[4],                      // payMonth
                         parseFloat(data[5]) || null,  // recovTotal
                         parseFloat(data[6]) || null,  // recovBalance

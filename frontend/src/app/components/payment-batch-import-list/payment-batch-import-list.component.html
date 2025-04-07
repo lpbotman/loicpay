@@ -1,7 +1,11 @@
+<div class="container">
 
+  <mat-card appearance="outlined" *ngFor="let batch of batchPayments">
+    <mat-card-content (click)="openBatchImport(batch.id)">
+      <span>{{ batch.name }}</span>
+      <mat-icon>chevron_right</mat-icon>
+    </mat-card-content>
+  </mat-card>
 
-<button mat-raised-button (click)="openImportWizard()">Importer un batch de paiements</button>
+</div>
 
-<mat-card appearance="outlined" *ngFor="let batch of batchPayments">
-  <mat-card-content>{{ batch.name }}</mat-card-content>
-</mat-card>

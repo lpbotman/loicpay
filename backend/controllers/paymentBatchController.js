@@ -1,5 +1,7 @@
 const LoicPayment = require('../models/loicPaymentModel');
 const LoicRecovery = require('../models/loicRecoveryModel');
+const MfxPayment = require('../models/mfxPaymentModel');
+const MfxRecovery = require('../models/mfxRecoveryModel');
 const BatchPayment = require('../models/batchPaymentModel');
 
 class PaymentBatchController {
@@ -42,6 +44,30 @@ class PaymentBatchController {
             const batchId = req.body.idBatch;
             const recoveryDataArray = req.body.data;
             await LoicRecovery.createLoicRecovery(batchId, recoveryDataArray);
+            res.status(201).json({ message: 'Recovery ajouté'});
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout des retenues:', error);
+            res.status(500).json({ message: 'Erreur serveur' });
+        }
+    }
+
+    static async addMfxPayments(req, res) {
+        try {
+            const batchId = req.body.idBatch;
+            const paymentDataArray = req.body.data;
+            await MfxPayment.createMfxPayment(batchId, paymentDataArray);
+            res.status(201).json({ message: 'Paiement ajouté'});
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout du paiement:', error);
+            res.status(500).json({ message: 'Erreur serveur' });
+        }
+    }
+
+    static async addMfxRecoveries(req, res) {
+        try {
+            const batchId = req.body.idBatch;
+            const recoveryDataArray = req.body.data;
+            await MfxRecovery.createMfxRecovery(batchId, recoveryDataArray);
             res.status(201).json({ message: 'Recovery ajouté'});
         } catch (error) {
             console.error('Erreur lors de l\'ajout des retenues:', error);

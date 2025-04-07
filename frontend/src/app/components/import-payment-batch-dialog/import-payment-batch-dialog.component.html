@@ -13,7 +13,7 @@
           </mat-form-field>
         </div>
         <div class="actions">
-          <button mat-button [disabled]="!step0Form.valid" (click)="validateStep(0)">Suivant</button>
+          <button mat-button matStepperNext [disabled]="!step0Form.valid">Suivant</button>
         </div>
       </form>
     </mat-step>
@@ -25,26 +25,22 @@
         <ng-template matStepLabel>Paiements Loic</ng-template>
 
         <div class="flex flex-row gap-10 stepper-content">
-          <div class="flex-column">
+          <div class="flex-column file-box">
             <mat-label>Fichier de paiement</mat-label>
-            <app-file-upload-picker (fileSelected)="onFileSelected($event, UploadFileType.PAYMENT)"></app-file-upload-picker>
+            <app-file-upload-picker (fileSelected)="onFileSelected($event, UploadFileType.LOIC_PAYMENT)"></app-file-upload-picker>
           </div>
-          <div class="flex-column">
+          <div class="flex-column file-box">
             <mat-label>Fichier de récupération</mat-label>
-            <app-file-upload-picker (fileSelected)="onFileSelected($event,UploadFileType.RECOVERY)"></app-file-upload-picker>
+            <app-file-upload-picker (fileSelected)="onFileSelected($event,UploadFileType.LOIC_RECOVERY)"></app-file-upload-picker>
           </div>
-          <div class="flex-column">
+          <div class="flex-column file-box">
             <mat-label>Fichier d'erreur</mat-label>
-            <app-file-upload-picker (fileSelected)="onFileSelected($event,UploadFileType.ERROR)"></app-file-upload-picker>
+            <app-file-upload-picker (fileSelected)="onFileSelected($event,UploadFileType.LOIC_ERROR)"></app-file-upload-picker>
           </div>
         </div>
 
         <div class="actions">
-          <span *ngIf="isImporting">
-            {{ progressInfo.task }}
-            <mat-progress-bar #fileProgress mode="determinate" [value]="progressInfo.progress" style="width: 200px;"></mat-progress-bar>
-          </span>
-          <button mat-button [disabled]="!step1Form.valid || isImporting" (click)="importLoic()">Suivant</button>
+          <button mat-button matStepperNext [disabled]="!step1Form.valid">Suivant</button>
         </div>
       </form>
     </mat-step>
@@ -54,14 +50,14 @@
       <form [formGroup]="step2Form">
         <ng-template matStepLabel>Paiements MFX</ng-template>
 
-        <p class="stepper-content">Tu peux ici prévisualiser les données (extrait du fichier).</p>
+        <div class="flex flex-row gap-10 stepper-content">
+          <div class="flex-column">
+            <mat-label>Fichier de paiement</mat-label>
+            <app-file-upload-picker (fileSelected)="onFileSelected($event, UploadFileType.MFX_PAYMENT)"></app-file-upload-picker>
+          </div>
+        </div>
 
-        <mat-form-field appearance="fill" class="w-full">
-          <mat-label>Tape "OK" pour confirmer</mat-label>
-          <input matInput formControlName="confirmation" />
-        </mat-form-field>
-
-        <div>
+        <div class="actions">
           <button mat-button matStepperNext [disabled]="!step2Form.valid">Suivant</button>
         </div>
       </form>
@@ -71,6 +67,11 @@
     <mat-step [editable]="false">
       <ng-template matStepLabel>Confirmation</ng-template>
       <p>Tu es prêt à importer ce batch de paiements.</p>
+
+      <span *ngIf="isImporting">
+        {{ progressInfo.task }}
+        <mat-progress-bar #fileProgress mode="determinate" [value]="progressInfo.progress" style="width: 400px;"></mat-progress-bar>
+      </span>
 
       <div>
         <button mat-raised-button color="primary" (click)="submit()">Importer</button>

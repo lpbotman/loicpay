@@ -15,6 +15,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   flex-direction: row;
 }
 
+.flex-end {
+  justify-content: flex-end;
+}
+
 .gap-10 {
   gap: 10px;
+}
+
+.pointer {
+  cursor: pointer;
 }

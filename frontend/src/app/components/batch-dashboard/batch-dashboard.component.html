@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="container flex">
+  <div class="criteria-container">
+    <app-match-ssin [batchId]="batchId"></app-match-ssin>
+  </div>
+  <div class="criteria-container">
+   <app-match-payment-plan [batchId]="batchId"></app-match-payment-plan>
+  </div>
+  <div class="criteria-container">
+    <app-match-ssin [batchId]="batchId"></app-match-ssin>
+  </div>
+</div>
+
+
