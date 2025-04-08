@@ -1,0 +1,49 @@
+<div class="header">
+  <p>Correspondance des montants</p>
+</div>
+
+<div class="container flex flex-row">
+  <div class="chart-container" style="display: block;">
+    <canvas
+      baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend">
+    </canvas>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="desc">
+      <th mat-header-cell *matHeaderCellDef> Description </th>
+      <td mat-cell *matCellDef="let element"> {{element.desc}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="gross">
+      <th mat-header-cell *matHeaderCellDef> Brut </th>
+      <td mat-cell *matCellDef="let element">
+        @if (element.percent) {
+          {{element.gross | flexibleNumber}}
+        } @else {
+          {{element.gross | flexibleNumber}}
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="net">
+      <th mat-header-cell *matHeaderCellDef> Net </th>
+      <td mat-cell *matCellDef="let element">
+        @if (element.percent) {
+          {{element.net | flexibleNumber}}
+        } @else {
+          {{element.net | flexibleNumber}}
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+
+</div>
