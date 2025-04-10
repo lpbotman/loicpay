@@ -91,8 +91,8 @@ export class ImportPaymentBatchDialogComponent {
     this.totalLines += await this.calculateTotalLines(this.paymentFileMfx);
     console.log('Total de lignes:', this.totalLines);
 
-    this.paymentBatchService.createBatchPayment(this.step0Form.get('importName')?.value).subscribe(async (response) => {
-      this.currentBatchId = response.id;
+    this.paymentBatchService.createBatchPayment(this.step0Form.get('importName')?.value).subscribe(async (id:number) => {
+      this.currentBatchId = id;
 
       this.progressInfo = {'task': 'Importation des paiements Loic', 'progress': 0, 'total': this.totalLines};
       await this.importLoicFile(this.paymentFileLoic, UploadFileType.LOIC_PAYMENT);

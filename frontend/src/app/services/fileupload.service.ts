@@ -29,17 +29,17 @@ export class FileUploadService {
 
   uploadParsedData(idBatch:number, data: any, uploadFileType: UploadFileType): Observable<any> {
     if (uploadFileType === UploadFileType.LOIC_PAYMENT) {
-      return this.http.post('http://localhost:3000/api/payment/loic/add', {idBatch, data});
+      return this.http.post('http://localhost:8080/api/payment/loic/add', {idBatch, data});
     }
     else if (uploadFileType === UploadFileType.LOIC_RECOVERY) {
-      return this.http.post('http://localhost:3000/api/recovery/loic/add', {idBatch, data});
+      return this.http.post('http://localhost:8080/api/recovery/loic/add', {idBatch, data});
     }
     else if (uploadFileType === UploadFileType.MFX_PAYMENT) {
-      return this.http.post('http://localhost:3000/api/payment/mfx/add', {idBatch, data});
+      return this.http.post('http://localhost:8080/api/payment/mfx/add', {idBatch, data});
     }
     else if (uploadFileType === UploadFileType.MFX_RECOVERY) {
       console.log(data);
-      return this.http.post('http://localhost:3000/api/recovery/mfx/add', {idBatch, data});
+      return this.http.post('http://localhost:8080/api/recovery/mfx/add', {idBatch, data});
     }
     else {
       throw new Error('Type de fichier inconnu');

@@ -8,11 +8,11 @@ export class PaymentBatchService {
   constructor(private http: HttpClient) {}
 
   createBatchPayment(name: string) : Observable<any> {
-    return this.http.post('http://localhost:3000/api/batch/new', {name: name});
+    return this.http.post('http://localhost:8080/api/batch/new', {name: name});
   }
 
   getAllBatchPayment() : Observable<any> {
-    return this.http.get('http://localhost:3000/api/batch/all');
+    return this.http.get('http://localhost:8080/api/batch/all');
   }
 
 }
