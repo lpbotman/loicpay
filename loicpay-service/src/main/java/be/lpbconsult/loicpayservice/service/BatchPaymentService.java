@@ -28,4 +28,12 @@ public class BatchPaymentService {
     public Optional<BatchPayment> getBatchPayment(Long batchId) {
         return batchPaymentRepository.findById(batchId);
     }
+
+    public void updateScore(Long batchId, Float score) {
+        Optional<BatchPayment> batchPayment = batchPaymentRepository.findById(batchId);
+        if (batchPayment.isPresent()) {
+            batchPayment.get().setScore(score);
+            batchPaymentRepository.save(batchPayment.get());
+        }
+    }
 }

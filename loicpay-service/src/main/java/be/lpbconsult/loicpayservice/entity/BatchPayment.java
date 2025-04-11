@@ -18,6 +18,9 @@ public class BatchPayment {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "score")
+    private Float score;
+
     public BatchPayment(Long batchId) {
         id = batchId;
     }

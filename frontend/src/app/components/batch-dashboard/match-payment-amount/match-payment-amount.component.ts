@@ -1,9 +1,8 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BaseChartDirective} from "ng2-charts";
-import {ChartConfiguration, ChartData} from "chart.js";
 import {forkJoin, Subject, takeUntil} from "rxjs";
 import {ReportingBatchService} from "../../../services/reporting-batch.service";
-import {DecimalPipe} from "@angular/common";
+import {DecimalPipe, NgIf} from "@angular/common";
 import {FlexibleNumberPipe} from "../../../pipes/flexible-number.pipe";
 import {
   MatCell,
@@ -14,12 +13,12 @@ import {
   MatHeaderRowDef,
   MatRow, MatRowDef, MatTable
 } from "@angular/material/table";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-match-payment-amount',
   imports: [
     BaseChartDirective,
-    DecimalPipe,
     FlexibleNumberPipe,
     MatCell,
     MatCellDef,
@@ -30,7 +29,9 @@ import {
     MatRow,
     MatRowDef,
     MatTable,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    MatProgressSpinner,
+    NgIf
   ],
   templateUrl: './match-payment-amount.component.html',
   styleUrl: './match-payment-amount.component.css'
@@ -43,9 +44,10 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
   dataSource: { desc: string, gross: number, net: number }[] = [];
 
   public barChartLabels = [']0,0.05]', ']0.05,1]', ']1,10]', ']10,100]', '+100'];// Catégories
-  public barChartType = 'horizontalBar';
   public barChartLegend = true;
   public barChartData: any[] = [];
+
+  isloaded = false;
 
   private destroy$ = new Subject<void>();
 
@@ -53,16 +55,6 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.initAmountDiff();
-
-      /*
-      datasets: [
-        {
-          data: [matchMfxPercent, 100-matchMfxPercent],
-          backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0'],
-        },
-      ],*/
-
-    //this.chart?.update();
   }
 
   public barChartOptions = {
@@ -98,7 +90,7 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
 
       this.barChartData = [
         {
-          label: 'Gross', // Barre pour les montants bruts
+          label: 'Brut', // Barre pour les montants bruts
           data: [result[1],result[2],result[3],result[4],result[5]],
           backgroundColor: 'rgba(255, 99, 132, 0.6)', // Couleur de la barre brute
           borderColor: 'rgba(255, 99, 132, 1)', // Bordure de la barre brute
@@ -112,6 +104,8 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
           borderWidth: 1,
         }
       ];
+
+      this.isloaded = true;
     });
   }
 

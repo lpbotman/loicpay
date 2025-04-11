@@ -1,10 +1,9 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatDialogContent, MatDialogRef, MatDialogTitle} from "@angular/material/dialog";
-import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from "@angular/material/stepper";
+import {MatStep, MatStepLabel, MatStepper, MatStepperNext} from "@angular/material/stepper";
 import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
-import {MatIcon} from "@angular/material/icon";
 import {FileUploadService} from "../../services/fileupload.service";
 import * as Papa from 'papaparse';
 import {MatProgressBar} from "@angular/material/progress-bar";
@@ -12,6 +11,7 @@ import {NgIf} from "@angular/common";
 import {FileUploadPickerComponent} from "../utils/file-upload-picker/file-upload-picker.component";
 import {PaymentBatchService} from "../../services/payment-batch.service";
 import {UploadFileType} from "../../enums/upload-file-type.enum";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-import-payment-batch-dialog',
@@ -36,14 +36,14 @@ import {UploadFileType} from "../../enums/upload-file-type.enum";
   standalone: true,
   styleUrl: './import-payment-batch-dialog.component.css'
 })
-export class ImportPaymentBatchDialogComponent {
+export class ImportPaymentBatchDialogComponent implements OnDestroy {
   @ViewChild('stepper') stepper: MatStepper | undefined;
   @ViewChild('fileProgress') fileProgressBar: MatProgressBar | undefined;
   step0Form: FormGroup;
   step1Form: FormGroup;
   step2Form: FormGroup;
 
-
+  private destroy$ = new Subject<void>();
 
   isImporting = false;
   progressInfo = {'task': '', 'progress': 0, 'total': 0};
@@ -102,8 +102,17 @@ export class ImportPaymentBatchDialogComponent {
 
       this.progressInfo.task = 'Importation des paiements Mfx';
       await this.importMfxFile(this.paymentFileMfx);
+
+      this.progressInfo.task = 'Calcul du score';
+      await this.updateScore();
     });
     //this.dialogRef.close();
+  }
+
+  async updateScore() {
+    this.paymentBatchService.updateScore(this.currentBatchId).pipe(takeUntil(this.destroy$)).subscribe(response => {
+      console.log('Score calculé:', response);
+    });
   }
 
   onFileSelected(file: File, uploadFileType: UploadFileType) {
@@ -345,4 +354,9 @@ export class ImportPaymentBatchDialogComponent {
 
 
   protected readonly UploadFileType = UploadFileType;
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

@@ -1,8 +1,10 @@
 <div class="header">
   <p>Correspondance des plans de paiement</p>
 </div>
-
-<div class="container flex flex-row">
+<div class="container flex flex-row" *ngIf="!isloaded">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="container flex flex-row" *ngIf="isloaded">
   <div style="display: block;">
     <canvas
       baseChart

@@ -1,7 +1,6 @@
 
 .container {
   gap: 10px;
-  align-items: center;
   max-width: 100%;
 }
 
@@ -16,6 +15,10 @@
   font-size: 13px;
 }
 
+tr {
+  height: 30px;
+}
+
 td, th {
   font-size: 10px;
 }
@@ -25,4 +28,14 @@ table {
   table-layout: auto;
   min-width: 0;
   width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+canvas {
+  width: 200px;
 }

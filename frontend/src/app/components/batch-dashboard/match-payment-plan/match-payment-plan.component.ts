@@ -14,6 +14,7 @@ import {
   MatRow, MatRowDef, MatTable
 } from "@angular/material/table";
 import {FlexibleNumberPipe} from "../../../pipes/flexible-number.pipe";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-match-payment-plan',
@@ -29,9 +30,10 @@ import {FlexibleNumberPipe} from "../../../pipes/flexible-number.pipe";
     MatRow,
     MatRowDef,
     MatTable,
-    NgIf,
     MatHeaderCellDef,
-    FlexibleNumberPipe
+    FlexibleNumberPipe,
+    NgIf,
+    MatProgressSpinner
   ],
   templateUrl: './match-payment-plan.component.html',
   styleUrl: './match-payment-plan.component.css'
@@ -49,6 +51,9 @@ export class MatchPaymentPlanComponent implements OnInit, OnDestroy{
     datasets: [],
   };
   pieChartType: 'pie' = 'pie';
+
+  isloaded = false;
+
   private destroy$ = new Subject<void>();
 
   constructor(private reportingService: ReportingBatchService) {}
@@ -64,7 +69,7 @@ export class MatchPaymentPlanComponent implements OnInit, OnDestroy{
         {desc: 'Correspondance des plans de paiement', value: response.allMatch, percent: matchMfxPercent},
       ]
       this.pieChartData = {
-        labels: ['Correspondance', 'Différence'],
+        labels: ['Ok', 'Diff.'],
         datasets: [
           {
             data: [matchMfxPercent, 100-matchMfxPercent],
@@ -73,6 +78,7 @@ export class MatchPaymentPlanComponent implements OnInit, OnDestroy{
         ],
       };
       this.chart?.update();
+      this.isloaded = true;
     });
   }
 

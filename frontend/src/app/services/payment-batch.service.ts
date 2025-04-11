@@ -15,4 +15,8 @@ export class PaymentBatchService {
     return this.http.get('http://localhost:8080/api/batch/all');
   }
 
+  updateScore(batchId: number) : Observable<any> {
+    return this.http.post('http://localhost:8080/api/batch/calculate-score', {batchId: batchId});
+  }
+
 }
