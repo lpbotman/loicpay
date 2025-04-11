@@ -41,7 +41,7 @@ public class LoicPayment {
     @Column(name = "country")
     private Integer country;
 
-    @Column(name = "refMonth")
+    @Column(name = "ref_month")
     private Integer refMonth;
 
     @Column(name = "closing_date")

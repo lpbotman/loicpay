@@ -27,7 +27,7 @@ public class LoicRecovery {
     @Column(name = "ssin")
     private String ssin;
 
-    @Column(name = "refMonth")
+    @Column(name = "ref_month")
     private Integer refMonth;
 
     @Column(name = "payMonth")

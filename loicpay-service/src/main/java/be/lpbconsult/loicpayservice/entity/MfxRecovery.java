@@ -26,6 +26,7 @@ public class MfxRecovery {
 
     private String ssin;
 
+    @Column(name = "ref_month")
     private Integer refMonth;
 
     @Column(name = "pay_month")

@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS loic_payment
     city_name                   TEXT,
     address                     TEXT,
     country                     INTEGER,
-    refMonth                    INTEGER,
+    ref_month                    INTEGER,
     closing_date                TEXT,
     pay_month                   TEXT,
     days_covered                INTEGER,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS loic_payment
 
 CREATE INDEX IF NOT EXISTS idx_loic_payment_ssin ON loic_payment (ssin);
 
-CREATE INDEX IF NOT EXISTS idx_loic_payment_batch_ssin_refmonth ON loic_payment (id_batch_payment, ssin, refMonth);
+CREATE INDEX IF NOT EXISTS idx_loic_payment_batch_ssin_refmonth ON loic_payment (id_batch_payment, ssin, ref_month);
 
 
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS loic_recovery
     unemploymentEntity  INTEGER,
     breakerName         TEXT,
     ssin                TEXT,
-    refMonth            INTEGER,
+    ref_month            INTEGER,
     payMonth            TEXT,
     recovTotal          REAL,
     recovBalance        REAL,
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS mfx_payment
     postal_code               TEXT,
     city_name          TEXT,
     address              TEXT,
-    refMonth         INTEGER,
+    ref_month         INTEGER,
     mois_pay         TEXT,
     dayx_covered            INTEGER,
     gross_amount_paid     REAL,
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS mfx_payment
 
 CREATE INDEX IF NOT EXISTS idx_mfx_payment_ssin ON mfx_payment (ssin);
 
-CREATE INDEX IF NOT EXISTS idx_mfx_payment_batch_ssin_refmonth ON mfx_payment (id_batch_payment, ssin, refMonth);
+CREATE INDEX IF NOT EXISTS idx_mfx_payment_batch_ssin_refmonth ON mfx_payment (id_batch_payment, ssin, ref_month);
 
 
 
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS mfx_recovery (
   unemployment_entity INTEGER,
   creditor_name TEXT,
   ssin TEXT,
-  refMonth INTEGER,
+  ref_month INTEGER,
   pay_month TEXT,
   net REAL,
   gross REAL,

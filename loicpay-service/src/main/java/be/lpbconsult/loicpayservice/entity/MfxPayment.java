@@ -41,7 +41,7 @@ public class MfxPayment {
     @Column(name = "country")
     private String country;
 
-    @Column(name = "refMonth")
+    @Column(name = "ref_month")
     private Integer refMonth;
 
     @Column(name = "closing_date")

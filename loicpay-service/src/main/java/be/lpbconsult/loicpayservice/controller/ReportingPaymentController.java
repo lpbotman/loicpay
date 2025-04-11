@@ -60,10 +60,13 @@ public class ReportingPaymentController {
 
             Map<String, Object> params = new HashMap<>();
             params.put("batchId", batchId);
-            params.put("intervalLowUp", intervalLow);
-            params.put("intervalHighUp", intervalHigh);
-            params.put("intervalHighDown", -intervalHigh);
-            params.put("intervalLowDown", -intervalLow);
+
+            if(intervalLow > 0) {
+                params.put("intervalLowUp", intervalLow);
+                params.put("intervalHighUp", intervalHigh);
+                params.put("intervalHighDown", -intervalHigh);
+                params.put("intervalLowDown", -intervalLow);
+            }
 
             if ("gross".equals(amountType) && intervalHigh > 0) {
                 count = (int) reportingService.executeQuery("getCountGrossAmountDiff", params, true);
