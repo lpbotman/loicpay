@@ -1,0 +1,29 @@
+<table mat-table [dataSource]="data" class="mat-elevation-z8">
+
+  <!-- Données -->
+  <ng-container matColumnDef="value">
+    <th mat-header-cell *matHeaderCellDef> Valeur </th>
+    <td mat-cell *matCellDef="let row"> {{ row.value }} </td>
+  </ng-container>
+
+  <!-- Labels -->
+  <ng-container matColumnDef="labels">
+    <th mat-header-cell *matHeaderCellDef> Labels </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-chip-grid #chipList  aria-label="Liste des labels">
+        <mat-chip *ngFor="let label of row.labels" [removable]="true" (removed)="removeLabel(row, label)">
+          {{ label }}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input
+          placeholder="Ajouter un label"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addLabel($event, row)">
+      </mat-chip-grid>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['value', 'labels']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['value', 'labels'];"></tr>
+</table>
