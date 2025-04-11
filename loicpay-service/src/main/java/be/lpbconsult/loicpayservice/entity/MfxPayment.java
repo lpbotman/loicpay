@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "loic_payment")
-public class LoicPayment {
+@Table(name = "mfx_payment")
+public class MfxPayment {
 
     @Getter
     @Setter
@@ -18,7 +18,7 @@ public class LoicPayment {
 
     @ManyToOne
     @JoinColumn(name = "id_batch_payment", referencedColumnName = "id")
-    private BatchPayment idBatchPayment;
+    private BatchPayment batchPayment;
 
     @Column(name = "unemployment_entity")
     private Integer unemploymentEntity;
@@ -39,7 +39,7 @@ public class LoicPayment {
     private String address;
 
     @Column(name = "country")
-    private Integer country;
+    private String country;
 
     @Column(name = "refMonth")
     private Integer refMonth;
@@ -65,7 +65,7 @@ public class LoicPayment {
     @Column(name = "empl_code")
     private String emplCode;
 
-    @Column(name = "citizen_language")
+    @Column(name = "lang")
     private String citizenLanguage;
 
     @Column(name = "gender")

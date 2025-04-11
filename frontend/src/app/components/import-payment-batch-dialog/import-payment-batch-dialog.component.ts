@@ -220,117 +220,88 @@ export class ImportPaymentBatchDialogComponent {
 
 
   private parseFixedWidthLinePayment(line: string): any {
-    const get = (start: number, end: number) =>
-      line.slice(start - 1, end).trim();
+    const get = (start: number, end: number) => {
+      const value = line.slice(start - 1, end).trim();
+      return value === '' ? null : value;
+    }
+
     return {
-      rec: parseInt(get(1, 1)),
-      bc: parseInt(get(2, 4)),
+      rec: get(1, 1),
+      bc: get(2, 3),
       nom: get(4, 96),
       ssin: get(94, 106),
-      cp: this.nullIfEmpty(get(107, 110)),
-      commune: this.nullIfEmpty(get(111, 130)),
-      rue: this.nullIfEmpty(get(131, 160)),
+      cp: get(107, 110),
+      commune: get(111, 130),
+      rue: get(131, 160),
       refMonth: this.parseDate(get(161, 167), 'MM/YYYY'),
       mois_pay: this.parseDate(get(168, 174), 'MM/YYYY'),
-      jours: this.toInt(get(175, 176)),
-      montant_brut: this.parseDecimal(get(177, 182)),
-      montant_prime: this.parseDecimal(get(183, 188)),
-      montant_retenue: this.parseDecimal(get(189, 194)),
-      montant_net: this.toFloat(get(195, 200), 10),
+      jours: get(175, 176),
+      montant_brut: get(177, 182),
+      montant_prime: get(183, 188),
+      montant_retenue: get(189, 194),
+      montant_net: get(195, 200),
       cpt_financier: get(201, 214),
-      frais: this.parseDecimal(get(215, 217)),
+      frais: get(215, 217),
       bareme: get(218, 226),
       code_empl: get(227, 228),
-      lang: this.toInt(get(229, 229)),
-      sexe: this.toInt(get(230, 230)),
-      statut_contrat: this.toInt(get(231, 231)),
-      contrat_trav: this.toInt(get(232, 232)),
-      retenue_onem: this.parseDecimal(get(233, 238)),
-      no_paie: this.toInt(get(239, 241)),
+      lang: get(229, 229),
+      sexe: get(230, 230),
+      statut_contrat: get(231, 231),
+      contrat_trav: get(232, 232),
+      retenue_onem: get(233, 238),
+      no_paie: get(239, 241),
       date_du_jour: this.parseDate(get(242, 249), 'YYYYMMDD'),
-      etat_civil: this.toInt(get(250, 250)),
-      a_droit: this.toInt(get(251, 252)),
-      cptedouble: this.nullIfEmpty(get(253, 253)),
-      addr_etr: this.nullIfEmpty(get(254, 313)),
-      prec: this.parseDecimal(get(314, 319)),
-      imposable: this.parseDecimal(get(320, 325)),
-      nonimposable: this.parseDecimal(get(326, 331)),
-      retenue06: this.parseDecimal(get(332, 337)),
+      etat_civil: get(250, 250),
+      a_droit: get(251, 252),
+      cptedouble: get(253, 253),
+      addr_etr: get(254, 313),
+      prec: get(314, 319),
+      imposable: get(320, 325),
+      nonimposable: get(326, 331),
+      retenue06: get(332, 337),
       canada: get(338, 343),
-      iban: this.nullIfEmpty(get(344, 377)),
-      bic: this.nullIfEmpty(get(378, 388)),
-      cc: this.nullIfEmpty(get(389, 389)),
-      pays: this.nullIfEmpty(get(390, 391)),
-      entite: this.toInt(get(392, 393)),
-      bce: this.nullIfEmpty(get(394, 401))
+      iban: get(344, 377),
+      bic: get(378, 388),
+      cc: get(389, 389),
+      pays: get(390, 391),
+      entite: get(392, 393),
+      bce: get(394, 403)
     };
   }
 
 
   parseFixedWidthLineRecovery(line: string): any {
+    const get = (start: number, end: number) => {
+      const value = line.slice(start - 1, end).trim();
+      return value === '' ? null : value;
+    }
+
     return {
-      rec: parseInt(line.substring(0, 1), 10),
-      bc: parseInt(line.substring(1, 4), 10),
-      nom: line.substring(3, 33).trim(),
-      ssin: line.substring(93, 106),
-      refMonth: this.formatDateFromMMYYYY(line.substring(160, 167)),
-      mois_pay: this.formatDateFromMMYYYY(line.substring(167, 174)),
-      ret_net: this.parseDecimal(line.substring(274, 282)),
-      ret_bedrag: this.parseDecimal(line.substring(254, 264)),
-      ret_saldo: this.parseDecimal(line.substring(264, 274)),
-      ret_date_val: this.formatDateFromYYYYMMDD(line.substring(274, 282)),
-      ret_type: parseInt(line.substring(282, 284), 10),
-      titulaire: line.substring(284, 299).trim(),
-      num_C31: line.substring(299, 313).trim(),
-      ret_prec: this.parseDecimal(line.substring(313, 319)),
-      ret_schuld_nr: line.substring(319, 329).trim(),
-      ret_cpt: line.substring(329, 339).trim(),
-      ret_iban: line.substring(339, 373).trim(),
-      ret_bic: line.substring(373, 384).trim(),
-      ret_cc: this.parseIntSafe(line.substring(384, 385)),
-      ret_instantie: line.substring(385, 387).trim(),
-      ret_bce: line.substring(387, 398).trim(),
+      rec: get(0, 1),
+      bc: get(1, 2),
+      nom: get(3, 33),
+      ssin: get(93, 106),
+      refMonth: this.parseDate(get(160, 167),'MM/YYYY'),
+      mois_pay: this.parseDate(get(167, 174), 'YYYYMMDD'),
+      ret_net: get(274, 282),
+      ret_bedrag: get(254, 264),
+      ret_saldo: get(264, 274),
+      ret_date_val: this.parseDate(get(274, 282), 'YYYYMMDD'),
+      ret_type: get(282, 284),
+      titulaire: get(284, 299),
+      num_C31: get(299, 313),
+      ret_prec: get(313, 319),
+      ret_schuld_nr: get(319, 329),
+      ret_cpt: get(329, 339),
+      ret_iban: get(339, 373),
+      ret_bic: get(373, 384),
+      ret_cc: get(384, 385),
+      ret_instantie: get(385, 387),
+      ret_bce: get(387, 401),
     };
   }
 
-  parseDecimal(str: string): number | null {
-    const trimmed = str.trim();
-    return trimmed ? parseFloat(trimmed) / 100 : null;
-  }
-
-  formatDateFromMMYYYY(str: string): string | null {
-    const trimmed = str.trim();
-    if (!trimmed.includes('/')) return null;
-    const [month, year] = trimmed.split('/');
-    return `${year}-${month}-01`;
-  }
-
-  formatDateFromYYYYMMDD(str: string): string | null {
-    const trimmed = str.trim();
-    if (!/^\d{8}$/.test(trimmed)) return null;
-    return `${trimmed.substring(0, 4)}-${trimmed.substring(4, 6)}-${trimmed.substring(6, 8)}`;
-  }
-
-  parseIntSafe(str: string): number | null {
-    const trimmed = str.trim();
-    return trimmed ? parseInt(trimmed, 10) : null;
-  }
-
-  private toInt(val: string): number | null {
-    const parsed = parseInt(val);
-    return isNaN(parsed) ? null : parsed;
-  }
-
-  private toFloat(val: string, divisor: number = 10): number | null {
-    const parsed = parseFloat(val);
-    return isNaN(parsed) ? null : parsed / divisor;
-  }
-
-  private nullIfEmpty(val: string): string | null {
-    return val === '' ? null : val;
-  }
-
-  private parseDate(val: string, format: 'MM/YYYY' | 'YYYYMMDD'): string | null {
+  private parseDate(val: string | null, format: 'MM/YYYY' | 'YYYYMMDD'): string | null {
     // Renvoie la date au format ISO ou null si invalide
     if (!val) return null;
 

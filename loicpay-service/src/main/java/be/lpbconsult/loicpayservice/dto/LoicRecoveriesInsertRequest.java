@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class LoicPaymentsInsertRequest {
+public class LoicRecoveriesInsertRequest {
     private Long batchId;
-    private List<String[]> loicPayments;
+    private List<String[]> loicRecoveries;
 }

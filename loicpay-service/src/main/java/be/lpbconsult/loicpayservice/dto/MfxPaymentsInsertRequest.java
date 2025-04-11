@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
-public class LoicPaymentsInsertRequest {
+public class MfxPaymentsInsertRequest {
     private Long batchId;
-    private List<String[]> loicPayments;
+    private List<Map<String, String>> mfxPayments;
 }

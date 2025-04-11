@@ -16,9 +16,8 @@ public class LoicPaymentController {
     private LoicPaymentService loicPaymentService;
 
     @PostMapping("/add")
-    public void addLoicPayments(@RequestBody LoicPaymentsInsertRequest request) {
-        System.out.println("addLoicPayments" + request);
-        loicPaymentService.createLoicPayment(request.getPaymentBatchId(), request.getLoicPayments());
+    public void addLoicPayments(@RequestBody LoicPaymentsInsertRequest request) throws Exception {
+        loicPaymentService.createLoicPayment(request.getBatchId(), request.getLoicPayments());
     }
 
 }

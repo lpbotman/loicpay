@@ -1,3 +1,4 @@
+/*
 package be.lpbconsult.loicpayservice.config;
 
 import org.springframework.context.annotation.Bean;
@@ -16,3 +17,4 @@ public class SQLiteConfig extends AbstractJdbcConfiguration {
     }
 
 }
+*/

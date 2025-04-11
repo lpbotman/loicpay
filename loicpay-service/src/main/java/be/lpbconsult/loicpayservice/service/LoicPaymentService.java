@@ -1,6 +1,7 @@
 package be.lpbconsult.loicpayservice.service;
 
 
+import be.lpbconsult.loicpayservice.entity.BatchPayment;
 import be.lpbconsult.loicpayservice.entity.LoicPayment;
 import be.lpbconsult.loicpayservice.repository.LoicPaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LoicPaymentService {
@@ -16,13 +18,22 @@ public class LoicPaymentService {
     @Autowired
     private LoicPaymentRepository loicPaymentRepository;
 
-    @Transactional
-    public String createLoicPayment(Long batchId, List<String[]> dataArray) {
-        List<LoicPayment> payments = new ArrayList<>();
+    @Autowired
+    private BatchPaymentService batchPaymentService;
 
+    @Transactional
+    public void createLoicPayment(Long batchId, List<String[]> dataArray) throws Exception {
+        List<LoicPayment> payments = new ArrayList<>();
+        Optional<BatchPayment> batchPayment = batchPaymentService.getBatchPayment(batchId);
+        if(batchPayment.isEmpty()) {
+            throw new Exception("Batch not found");
+        }
         for (String[] data : dataArray) {
+            if(data.length != 47) {
+                continue;
+            }
             LoicPayment payment = new LoicPayment();
-            payment.setIdBatchPayment(batchId);
+            payment.setIdBatchPayment(batchPayment.get());
             payment.setUnemploymentEntity(parseInt(data[1]));
             payment.setCitizenName(data[2]);
             payment.setSsin(data[6]);
@@ -59,15 +70,22 @@ public class LoicPaymentService {
 
         loicPaymentRepository.saveAll(payments);
 
-        return payments.size() + " lignes insérées";
     }
 
     private Integer parseInt(String value) {
-        return value != null && !value.isEmpty() ? Integer.parseInt(value) : null;
+        try {
+            return value != null && !value.isEmpty() ? Integer.parseInt(value) : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private Float parseFloat(String value) {
-        return value != null && !value.isEmpty() ? Float.parseFloat(value.replace(",", ".")) : null;
+        try {
+            return value != null && !value.isEmpty() ? Float.parseFloat(value.replace(",", ".")) : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
 }

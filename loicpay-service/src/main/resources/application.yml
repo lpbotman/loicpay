@@ -2,14 +2,29 @@ spring:
   application:
     name: loicpay-service
   datasource:
-    url: jdbc:sqlite:/Users/botlp/Temp/loicpay-batch.db  # Remplace avec le chemin correct vers ta DB
+    url: jdbc:sqlite:/Users/botlp/Temp/loicpay-batch.db?journal_mode=WAL  # Remplace avec le chemin correct vers ta DB
     driverClassName: org.sqlite.JDBC
     username: ""
     password: ""
-  jdbc:
-    # Utilisation d'HikariCP pour la gestion des connexions
     hikari:
-      maximum-pool-size: 5
+      maximum-pool-size: 1
+      minimum-idle: 1
   jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: none  # Pas de gestion automatique des tables (en l'absence de JPA)
+      ddl-auto: update  # Pas de gestion automatique des tables (en l'absence de JPA)
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/init.sql
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core: DEBUG
+        data:
+          jdbc:
+            core: TRACE

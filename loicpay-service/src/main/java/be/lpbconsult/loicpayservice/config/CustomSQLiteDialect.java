@@ -1,3 +1,7 @@
+
+
+
+/*
 package be.lpbconsult.loicpayservice.config;
 import org.springframework.data.relational.core.dialect.AbstractDialect;
 import org.springframework.data.relational.core.dialect.LimitClause;
@@ -7,12 +11,9 @@ import org.springframework.data.relational.core.sql.IdentifierProcessing.LetterC
 import org.springframework.data.relational.core.sql.IdentifierProcessing.Quoting;
 import org.springframework.data.relational.core.sql.LockOptions;
 
-/**
- * A SQL dialect for SQLite. This class does nothing for pessimistic locking as SQLite doesn't
- * support the feature.
- */
+
 public class CustomSQLiteDialect extends AbstractDialect {
-    /** Singleton instance. */
+
     public static final CustomSQLiteDialect INSTANCE = new CustomSQLiteDialect();
 
     private static final LimitClause LIMIT_CLAUSE =
@@ -57,6 +58,7 @@ public class CustomSQLiteDialect extends AbstractDialect {
         return LIMIT_CLAUSE;
     }
 
+
     @Override
     public LockClause lock() {
         return LOCK_CLAUSE;
@@ -67,4 +69,4 @@ public class CustomSQLiteDialect extends AbstractDialect {
         return IdentifierProcessing.create(Quoting.ANSI, LetterCasing.LOWER_CASE);
     }
 
-}
+}*/

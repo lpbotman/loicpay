@@ -1,4 +1,6 @@
-CREATE TABLE IF NOT EXISTS payment_batch (
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS batch_payment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL
 );
@@ -38,7 +40,7 @@ CREATE TABLE IF NOT EXISTS loic_payment
     leave_type                  TEXT,
     interruption_regime         TEXT,
     FOREIGN KEY (id_batch_payment) REFERENCES batch_payment (id) ON DELETE CASCADE
-)
+);
 
 CREATE INDEX IF NOT EXISTS idx_loic_payment_ssin ON loic_payment (ssin);
 
@@ -83,7 +85,7 @@ CREATE TABLE IF NOT EXISTS loic_recovery
     creditorLanguage    TEXT,
     creditorGender      TEXT,
     FOREIGN KEY (id_batch_payment) REFERENCES batch_payment (id) ON DELETE CASCADE
-)
+);
 
 CREATE INDEX IF NOT EXISTS idx_loic_recovery_ssin ON loic_recovery (ssin);
 
@@ -92,47 +94,41 @@ CREATE TABLE IF NOT EXISTS mfx_payment
 (
     id               INTEGER PRIMARY KEY AUTOINCREMENT,
     id_batch_payment INTEGER,
-    bc               INTEGER,
-    nom              TEXT,
+    unemployment_entity               INTEGER,
+    name              TEXT,
     ssin             TEXT,
-    cp               TEXT,
-    commune          TEXT,
-    rue              TEXT,
+    postal_code               TEXT,
+    city_name          TEXT,
+    address              TEXT,
     refMonth         INTEGER,
     mois_pay         TEXT,
-    jours            INTEGER,
-    montant_brut     REAL,
-    montant_prime    REAL,
-    montant_retenue  REAL,
-    montant_net      REAL,
-    cpt_financier    TEXT,
-    frais            REAL,
-    bareme           TEXT,
+    dayx_covered            INTEGER,
+    gross_amount_paid     REAL,
+    prime    REAL,
+    total_recov  REAL,
+    net_paid      REAL,
+    fee            REAL,
+    oayscale           TEXT,
     code_empl        TEXT,
     lang             INTEGER,
-    sexe             INTEGER,
-    statut_contrat   INTEGER,
-    contrat_trav     INTEGER,
-    retenue_onem     REAL,
-    no_paie          INTEGER,
-    date_du_jour     TEXT,
-    etat_civil       INTEGER,
-    a_droit          INTEGER,
-    cptedouble       TEXT,
-    addr_etr         TEXT,
-    prec             REAL,
+    gender             INTEGER,
+    contract_status   INTEGER,
+    contract_worker     INTEGER,
+    recov_neo     REAL,
+    issue_nbr          INTEGER,
+    foreign_address         TEXT,
+    withholding_tax_amount_paid REAL,
     imposable        REAL,
     nonimposable     REAL,
-    retenue06        REAL,
-    canada           TEXT,
+    recov_06        REAL,
     iban             TEXT,
     bic              TEXT,
     cc               TEXT,
-    pays             TEXT,
-    entite           INTEGER,
+    country             TEXT,
+    competent_entity           TEXT,
     bce              TEXT,
     FOREIGN KEY (id_batch_payment) REFERENCES batch_payment (id) ON DELETE CASCADE
-)
+);
 
 CREATE INDEX IF NOT EXISTS idx_mfx_payment_ssin ON mfx_payment (ssin);
 
@@ -143,28 +139,28 @@ CREATE INDEX IF NOT EXISTS idx_mfx_payment_batch_ssin_refmonth ON mfx_payment (i
 CREATE TABLE IF NOT EXISTS mfx_recovery (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   id_batch_payment INTEGER,
-  bc INTEGER,
-  nom TEXT,
+  unemployment_entity INTEGER,
+  creditor_name TEXT,
   ssin TEXT,
   refMonth INTEGER,
-  mois_pay TEXT,
-  ret_net REAL,
-  ret_bedrag REAL,
-  ret_saldo REAL,
-  ret_date_val TEXT,
-  ret_type INTEGER,
-  titulaire TEXT,
-  num_C31 TEXT,
-  ret_prec REAL,
-  ret_schuld_nr TEXT,
-  ret_cpt TEXT,
-  ret_iban TEXT,
-  ret_bic TEXT,
-  ret_cc INTEGER,
-  ret_instantie TEXT,
-  ret_bce TEXT,
+  pay_month TEXT,
+  net REAL,
+  gross REAL,
+  balance REAL,
+  validity_date TEXT,
+  type TEXT,
+  owner TEXT,
+  c31 TEXT,
+  with_holding_tax REAL,
+  debt_nbr TEXT,
+  account_number TEXT,
+  iban TEXT,
+  bic TEXT,
+  cc INTEGER,
+  instantie TEXT,
+  bce TEXT,
   FOREIGN KEY (id_batch_payment) REFERENCES batch_payment(id) ON DELETE CASCADE
-)
+);
 
 
 CREATE INDEX IF NOT EXISTS idx_mfx_recovery_ssin ON mfx_recovery (ssin);
