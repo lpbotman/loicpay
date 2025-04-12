@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class LoicPaymentService {
             if(data.length != 47) {
                 continue;
             }
+
             LoicPayment payment = new LoicPayment();
             payment.setIdBatchPayment(batchPayment.get());
             payment.setUnemploymentEntity(parseInt(data[1]));
@@ -45,25 +48,26 @@ public class LoicPaymentService {
             payment.setClosingDate(data[41]);
             payment.setPayMonth(data[11]);
             payment.setDaysCovered(parseInt(data[12]));
-            payment.setGrossAmountPaid(parseFloat(data[13]));
-            payment.setTotalRecov(parseFloat(data[15]));
+            payment.setGrossAmountPaid(parseDecimal(data[13]));
+            payment.setTotalRecov(parseDecimal(data[15]));
             payment.setPayscale(data[18]);
             payment.setEmplCode(data[19]);
             payment.setCitizenLanguage(data[20]);
             payment.setGender(data[21]);
-            payment.setRecovNeo(parseFloat(data[24]));
-            payment.setWithholdingTaxAmountPaid(parseFloat(data[30]));
-            payment.setRecovNetAmount(parseFloat(data[31]));
-            payment.setRecovGrossAmount(parseFloat(data[32]));
-            payment.setRecov06(parseFloat(data[33]));
+            payment.setRecovNeo(parseDecimal(data[24]));
+            payment.setWithholdingTaxAmountPaid(parseDecimal(data[30]));
+            payment.setRecovNetAmount(parseDecimal(data[31]));
+            payment.setRecovGrossAmount(parseDecimal(data[32]));
+            payment.setRecov06(parseDecimal(data[33]));
             payment.setIban(data[35]);
             payment.setBic(data[36]);
             payment.setCompetentEntity(data[39]);
             payment.setBce(data[40]);
             payment.setTicketNbr(data[42]);
-            payment.setNetPaid(parseFloat(data[44]));
+            payment.setNetPaid(parseDecimal(data[44]));
             payment.setLeaveType(data[45]);
             payment.setInterruptionRegime(data[46]);
+
 
             payments.add(payment);
         }
@@ -80,9 +84,13 @@ public class LoicPaymentService {
         }
     }
 
-    private Float parseFloat(String value) {
+    private BigDecimal parseDecimal(String value) {
         try {
-            return value != null && !value.isEmpty() ? Float.parseFloat(value.replace(",", ".")) : null;
+            if (value != null && !value.isEmpty()) {
+                BigDecimal parsedValue = new BigDecimal(value.replace(",", "."));
+                return parsedValue.setScale(2, RoundingMode.HALF_UP);
+            }
+            return null;
         } catch (NumberFormatException e) {
             return null;
         }

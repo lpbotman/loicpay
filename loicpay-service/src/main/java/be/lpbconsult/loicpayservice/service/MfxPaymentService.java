@@ -6,6 +6,8 @@ import be.lpbconsult.loicpayservice.repository.MfxPaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,17 +42,17 @@ public class MfxPaymentService {
                 payment.setRefMonth(Integer.valueOf(data.get("refMonth")));
                 payment.setPayMonth(data.get("mois_pay"));
                 payment.setDaysCovered(parseInt(data.get("jours")));
-                payment.setGrossAmountPaid(parseFloat(data.get("montant_brut"),100));
-                payment.setTotalRecov(parseFloat(data.get("montant_retenue"),100));
-                payment.setNetPaid(parseFloat(data.get("montant_net"),100));
+                payment.setGrossAmountPaid(parseDecimal(data.get("montant_brut"),100));
+                payment.setTotalRecov(parseDecimal(data.get("montant_retenue"),100));
+                payment.setNetPaid(parseDecimal(data.get("montant_net"),100));
                 payment.setIban(data.get("cpt_financier"));
                 payment.setPayscale(data.get("bareme"));
                 payment.setEmplCode(data.get("code_empl"));
                 payment.setCitizenLanguage(data.get("lang"));
                 payment.setGender(data.get("sexe"));
-                payment.setRecovNeo(parseFloat(data.get("retenue_onem"),100));
-                payment.setWithholdingTaxAmountPaid(parseFloat(data.get("prec")));
-                payment.setRecov06(parseFloat(data.get("retenue06"),100));
+                payment.setRecovNeo(parseDecimal(data.get("retenue_onem"),100));
+                payment.setWithholdingTaxAmountPaid(parseDecimal(data.get("prec")));
+                payment.setRecov06(parseDecimal(data.get("retenue06"),100));
                 payment.setIban(data.get("iban"));
                 payment.setBic(data.get("bic"));
                 payment.setCountry(data.get("pays"));
@@ -74,14 +76,19 @@ public class MfxPaymentService {
         }
     }
 
-    private Float parseFloat(String value) {
-        return parseFloat(value, 1);
+    private BigDecimal parseDecimal(String value) {
+        return parseDecimal(value, 1);
     }
 
-    private Float parseFloat(String value, int divisor) {
+    private BigDecimal parseDecimal(String value, int divisor) {
         try {
-            return (value != null && !value.isBlank()) ? Float.parseFloat(value.replace(",", "."))/divisor : null;
-        } catch (NumberFormatException e) {
+            if (value != null && !value.isBlank()) {
+                BigDecimal parsedValue = new BigDecimal(value.replace(",", "."));
+
+                return parsedValue.divide(BigDecimal.valueOf(divisor), 2, RoundingMode.HALF_UP);
+            }
+            return null;
+        } catch (NumberFormatException | ArithmeticException e) {
             return null;
         }
     }

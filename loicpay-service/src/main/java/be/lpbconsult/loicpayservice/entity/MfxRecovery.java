@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -32,9 +34,9 @@ public class MfxRecovery {
     @Column(name = "pay_month")
     private String payMonth;
 
-    private Float net;
-    private Float gross;
-    private Float balance;
+    private BigDecimal net;
+    private BigDecimal gross;
+    private BigDecimal balance;
 
     @Column(name = "validity_date")
     private String validityDate;
@@ -44,7 +46,7 @@ public class MfxRecovery {
     private String c31;
 
     @Column(name = "with_holding_tax")
-    private Float withHoldingTax;
+    private BigDecimal withHoldingTax;
 
     @Column(name = "debt_nbr")
     private String debtNbr;

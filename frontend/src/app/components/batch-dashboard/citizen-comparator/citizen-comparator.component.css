@@ -1,0 +1,16 @@
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.table-header{
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
+mat-header-cell {
+  border-bottom: 1px solid #e0e0e0;
+}

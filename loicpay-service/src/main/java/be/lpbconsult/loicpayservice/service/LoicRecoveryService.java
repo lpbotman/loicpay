@@ -1,12 +1,13 @@
 package be.lpbconsult.loicpayservice.service;
 
 import be.lpbconsult.loicpayservice.entity.BatchPayment;
-import be.lpbconsult.loicpayservice.entity.LoicPayment;
 import be.lpbconsult.loicpayservice.entity.LoicRecovery;
 import be.lpbconsult.loicpayservice.repository.LoicRecoveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,12 +40,12 @@ public class LoicRecoveryService {
                 loicRecovery.setSsin(data[2]);
                 loicRecovery.setRefMonth(Integer.parseInt(data[3]));
                 loicRecovery.setPayMonth(data[4]);
-                loicRecovery.setRecovTotal(parseFloat(data[5]));
-                loicRecovery.setRecovBalance(parseFloat(data[6]));
+                loicRecovery.setRecovTotal(parseDecimal(data[5]));
+                loicRecovery.setRecovBalance(parseDecimal(data[6]));
                 loicRecovery.setRecovValidityDate(data[7]);
                 loicRecovery.setRecovType(data[8]);
                 loicRecovery.setC31(data[9]);
-                loicRecovery.setRecovWithHoldingTax(parseFloat(data[10]));
+                loicRecovery.setRecovWithHoldingTax(parseDecimal(data[10]));
                 loicRecovery.setDebtNbr(data[11]);
                 loicRecovery.setBban(data[12]);
                 loicRecovery.setIban(data[13]);
@@ -53,8 +54,8 @@ public class LoicRecoveryService {
                 loicRecovery.setCompetentEntity(data[16]);
                 loicRecovery.setClosingDate(data[17]);
                 loicRecovery.setRecovTicketNbr(data[18]);
-                loicRecovery.setRecovNetAmount(parseFloat(data[19]));
-                loicRecovery.setRecovGrossAmount(parseFloat(data[20]));
+                loicRecovery.setRecovNetAmount(parseDecimal(data[19]));
+                loicRecovery.setRecovGrossAmount(parseDecimal(data[20]));
                 loicRecovery.setBreakerAddress(data[21]);
                 loicRecovery.setBreakerPostalCode(data[22]);
                 loicRecovery.setBreakerCityName(data[23]);
@@ -83,9 +84,13 @@ public class LoicRecoveryService {
         }
     }
 
-    private Float parseFloat(String value) {
+    private BigDecimal parseDecimal(String value) {
         try {
-            return value != null && !value.isEmpty() ? Float.parseFloat(value.replace(",", ".")) : null;
+            if (value != null && !value.isEmpty()) {
+                BigDecimal parsedValue = new BigDecimal(value.replace(",", "."));
+                return parsedValue.setScale(2, RoundingMode.HALF_UP);
+            }
+            return null;
         } catch (NumberFormatException e) {
             return null;
         }

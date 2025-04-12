@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
+import {CitizenReporting, PaginatedCitizenReporting} from "../dtos/CitizenReporting.dto";
 
 @Injectable({ providedIn: 'root' })
 export class ReportingBatchService {
@@ -20,6 +21,10 @@ export class ReportingBatchService {
       throw new Error('Amount type invalide');
     }
     return this.http.get('http://localhost:8080/api/reporting/amount-diff?batchId='+batchId+'&amountType='+amountType+'&intervalLow='+intervalLow+'&intervalHigh='+intervalHigh);
+  }
+
+  getCitizensByCriteria(batchId: number | null, criteria: string, page: number, size: number) : Observable<PaginatedCitizenReporting> {
+    return this.http.get<PaginatedCitizenReporting>('http://localhost:8080/api/reporting/'+criteria+'?batchId='+batchId+'&page='+page+'&size='+size);
   }
 
 }

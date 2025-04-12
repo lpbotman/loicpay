@@ -1,0 +1,19 @@
+{
+  "citizen-reporting": {
+    "header": {
+      "ssin": "Niss",
+      "ref_month": "Mois Ref.",
+      "citizen_name": "Citoyen",
+      "gross_amount_paid": "Brut",
+      "withholding_tax_amount_paid": "Prec.",
+      "net_paid": "Net",
+      "recov_gross_amount": "Recov. Brut",
+      "recov_net_amount": "Recov. Net",
+      "payscale": "Barème",
+      "competent_entity": "Entité",
+      "leave_type": "Congé",
+      "interruption_regime": "Régime",
+      "label": "Label"
+    }
+  }
+}

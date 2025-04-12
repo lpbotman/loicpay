@@ -1,29 +1,54 @@
-<table mat-table [dataSource]="data" class="mat-elevation-z8">
+<div style="max-height: 800px; overflow-y: auto;">
+    <table mat-table [dataSource]="citizens" class="mat-elevation-z8">
 
-  <!-- Données -->
-  <ng-container matColumnDef="value">
-    <th mat-header-cell *matHeaderCellDef> Valeur </th>
-    <td mat-cell *matCellDef="let row"> {{ row.value }} </td>
-  </ng-container>
+      <!-- Données -->
+      <ng-container matColumnDef="ssin">
+        <th mat-header-cell *matHeaderCellDef> {{ "citizen-reporting.header.ssin" | translate }} </th>
+        <td mat-cell *matCellDef="let row"> {{ row.ssin }} </td>
+      </ng-container>
 
-  <!-- Labels -->
-  <ng-container matColumnDef="labels">
-    <th mat-header-cell *matHeaderCellDef> Labels </th>
-    <td mat-cell *matCellDef="let row">
-      <mat-chip-grid #chipList  aria-label="Liste des labels">
-        <mat-chip *ngFor="let label of row.labels" [removable]="true" (removed)="removeLabel(row, label)">
-          {{ label }}
-          <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip>
-        <input
-          placeholder="Ajouter un label"
-          [matChipInputFor]="chipList"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addLabel($event, row)">
-      </mat-chip-grid>
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="refMonth">
+        <th mat-header-cell *matHeaderCellDef> {{ "citizen-reporting.header.ref_month" | translate }} </th>
+        <td mat-cell *matCellDef="let row"> {{ row.refMonth }} </td>
+      </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="['value', 'labels']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['value', 'labels'];"></tr>
-</table>
+      <!-- Boucle dynamique sur les autres colonnes -->
+      <ng-container *ngFor="let column of dynamicDisplayedColumns" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef> {{ "citizen-reporting.header."+column | translate }} </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.data ? getDataValue(row, column) : '-' }}
+        </td>
+      </ng-container>
+
+
+      <!-- Labels -->
+      <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef> Label </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-chip-grid #chipList  aria-label="Liste des labels">
+            <mat-chip *ngFor="let label of row.labels" [removable]="true" (removed)="removeLabel(row, label)">
+            {{ label }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          <input
+            placeholder="Ajouter un label"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (matChipInputTokenEnd)="addLabel($event, row)">
+        </mat-chip-grid>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+<mat-paginator (page)="handlePageEvent($event)"
+               [length]="pageTotal"
+               [pageSize]="pageSize"
+               [showFirstLastButtons]="false"
+               [pageSizeOptions]="[]"
+               [hidePageSize]="false"
+               [pageIndex]="pageIndex"
+               aria-label="Select page">
+</mat-paginator>

@@ -91,21 +91,28 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
     this.totalLines += await this.calculateTotalLines(this.paymentFileMfx);
     console.log('Total de lignes:', this.totalLines);
 
-    this.paymentBatchService.createBatchPayment(this.step0Form.get('importName')?.value).subscribe(async (id:number) => {
-      this.currentBatchId = id;
-
-      this.progressInfo = {'task': 'Importation des paiements Loic', 'progress': 0, 'total': this.totalLines};
-      await this.importLoicFile(this.paymentFileLoic, UploadFileType.LOIC_PAYMENT);
-
-      this.progressInfo.task = 'Importation des retenues Loic';
-      await this.importLoicFile(this.recoveryFileLoic, UploadFileType.LOIC_RECOVERY);
-
-      this.progressInfo.task = 'Importation des paiements Mfx';
-      await this.importMfxFile(this.paymentFileMfx);
-
-      this.progressInfo.task = 'Calcul du score';
-      await this.updateScore();
+    const id = await new Promise<number>((resolve, reject) => {
+      this.paymentBatchService.createBatchPayment(this.step0Form.get('importName')?.value)
+        .subscribe({
+          next: (id: number) => resolve(id),
+          error: (err) => reject(err)
+        });
     });
+
+    this.currentBatchId = id;
+
+    this.progressInfo = {'task': 'Importation des paiements Loic', 'progress': 0, 'total': this.totalLines};
+    await this.importLoicFile(this.paymentFileLoic, UploadFileType.LOIC_PAYMENT);
+
+    this.progressInfo.task = 'Importation des retenues Loic';
+    await this.importLoicFile(this.recoveryFileLoic, UploadFileType.LOIC_RECOVERY);
+
+    this.progressInfo.task = 'Importation des paiements Mfx';
+    await this.importMfxFile(this.paymentFileMfx);
+
+    this.progressInfo.task = 'Calcul du score';
+    await this.updateScore();
+
     //this.dialogRef.close();
   }
 

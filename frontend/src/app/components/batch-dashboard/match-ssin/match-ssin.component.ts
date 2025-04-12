@@ -66,7 +66,7 @@ export class MatchSsinComponent implements OnInit, OnDestroy{
       this.dataSource = [
         {desc: 'Nombre de citoyens distincts dans LOIC', value: response.loicCount},
         {desc: 'Nombre de citoyens distincts dans MFX', value: response.mfxCount},
-        {desc: 'Nombre de citoyens exclusifs LOIC', value: response.loicExclu, percent: response.loicExclu / response.loicCount * 100, filter: 'citizenExcluLoic' },
+        {desc: 'Nombre de citoyens exclusifs LOIC', value: response.loicExclu, percent: response.loicExclu / response.loicCount * 100, filter: 'exclu-loic' },
         {desc: 'Nombre de citoyens exclusifs MFX', value: response.mfxExclu, percent: response.mfxExclu / response.mfxCount * 100},
         {desc: 'Correspondance entre LOIC et MFX', value: response.mfxCount - response.mfxExclu, percent: excludeMFXPercent},
       ]

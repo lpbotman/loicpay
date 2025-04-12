@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -34,10 +36,10 @@ public class LoicRecovery {
     private String payMonth;
 
     @Column(name = "recovTotal")
-    private Float recovTotal;
+    private BigDecimal recovTotal;
 
     @Column(name = "recovBalance")
-    private Float recovBalance;
+    private BigDecimal recovBalance;
 
     @Column(name = "recovValidityDate")
     private String recovValidityDate;
@@ -49,7 +51,7 @@ public class LoicRecovery {
     private String c31;
 
     @Column(name = "recovWithHoldingTax")
-    private Float recovWithHoldingTax;
+    private BigDecimal recovWithHoldingTax;
 
     @Column(name = "debtNbr")
     private String debtNbr;
@@ -76,10 +78,10 @@ public class LoicRecovery {
     private String recovTicketNbr;
 
     @Column(name = "recovNetAmount")
-    private Float recovNetAmount;
+    private BigDecimal recovNetAmount;
 
     @Column(name = "recovGrossAmount")
-    private Float recovGrossAmount;
+    private BigDecimal recovGrossAmount;
 
     @Column(name = "breakerAddress")
     private String breakerAddress;

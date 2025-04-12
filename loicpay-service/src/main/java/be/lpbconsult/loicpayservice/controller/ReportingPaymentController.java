@@ -1,11 +1,13 @@
 package be.lpbconsult.loicpayservice.controller;
 
+import be.lpbconsult.loicpayservice.dto.CitizenReporting;
 import be.lpbconsult.loicpayservice.service.ReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,6 +31,22 @@ public class ReportingPaymentController {
             return ResponseEntity.ok(new SSINMatchResponse(loicCount, mfxCount, loicExclu, mfxExclu));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Server error");
+        }
+    }
+
+    @GetMapping("/exclu-loic")
+    public ResponseEntity<?> getExcluLoic(@RequestParam Integer batchId, @RequestParam int page, @RequestParam int size) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("batchId", batchId);
+
+            int offset = page * size;
+            List<CitizenReporting> results = reportingService.getCitizenReportings("getExcluSSINFromLoic", params, offset, size);
+            int total = reportingService.countTotal("getExcluSSINFromLoic", params);
+
+            return ResponseEntity.ok(new PaginatedCitizenReporting(results, total));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Server error " + e.getMessage());
         }
     }
 
@@ -87,4 +105,5 @@ public class ReportingPaymentController {
     // DTOs internes pour les réponses JSON
     private record SSINMatchResponse(int loicCount, int mfxCount, int loicExclu, int mfxExclu) {}
     private record PaymentPlanResponse(int loicCount, int mfxCount, int allMatch) {}
+    private record PaginatedCitizenReporting(List<CitizenReporting> results, int total) {}
 }

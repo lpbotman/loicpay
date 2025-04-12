@@ -1,11 +1,19 @@
 package be.lpbconsult.loicpayservice.service;
 
 import be.lpbconsult.loicpayservice.config.QueryConfig;
+import be.lpbconsult.loicpayservice.dto.CitizenReporting;
 import jakarta.persistence.Query;
 import jakarta.persistence.EntityManager;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,5 +41,88 @@ public class ReportingService {
         } else {
             return query.getResultList();
         }
+    }
+
+    public List<CitizenReporting> getCitizenReportings(String queryName, Map<String, Object> params, int offset, int limit) {
+        String sql = queryConfig.getQuery(queryName);
+        if (sql == null) {
+            throw new IllegalArgumentException("Requête inconnue: " + queryName);
+        }
+
+        String sqlWithPaginator = sql + " LIMIT ? OFFSET ?";
+
+        Session session = entityManager.unwrap(Session.class);
+        return session.doReturningWork(connection -> {
+            try (PreparedStatement stmt = connection.prepareStatement(sqlWithPaginator)) {
+                int i = 1;
+                for (Object paramValue : params.values()) {
+                    stmt.setObject(i++, paramValue);
+                }
+
+                stmt.setInt(i++, limit);
+                stmt.setInt(i, offset);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    ResultSetMetaData metaData = rs.getMetaData();
+                    int columnCount = metaData.getColumnCount();
+
+                    List<CitizenReporting> results = new ArrayList<>();
+
+                    while (rs.next()) {
+                        String ssin = rs.getString("ssin");
+                        int refMonth = rs.getInt("ref_month");
+
+                        List<CitizenReporting.LabelledValue> data = new ArrayList<>();
+
+                        for (int col = 1; col <= columnCount; col++) {
+                            String columnName = metaData.getColumnLabel(col);
+
+                            if (!"ssin".equalsIgnoreCase(columnName) && !"ref_month".equalsIgnoreCase(columnName)) {
+                                Object rawValue = rs.getObject(col);
+
+                                String value = rawValue != null ? rawValue.toString() : "";
+
+                                CitizenReporting.LabelledValue entry = new CitizenReporting.LabelledValue(columnName, value);
+                                data.add(entry);
+                            }
+                        }
+
+                        CitizenReporting reporting = new CitizenReporting(ssin, refMonth, data);
+                        results.add(reporting);
+                    }
+
+                    return results;
+                }
+            }
+        });
+    }
+
+    public int countTotal(String queryName, Map<String, Object> params) {
+        String baseSql = queryConfig.getQuery(queryName);
+        String countSql = buildCountQuery(baseSql);
+
+        Session session = entityManager.unwrap(Session.class);
+
+        return session.doReturningWork(connection -> {
+            try (PreparedStatement stmt = connection.prepareStatement(countSql)) {
+                int i = 1;
+                for (Object paramValue : params.values()) {
+                    stmt.setObject(i++, paramValue);
+                }
+                try (ResultSet rs = stmt.executeQuery()) {
+                    rs.next();
+                    return rs.getInt(1);
+                }
+            }
+        });
+    }
+
+    private String buildCountQuery(String baseSql) {
+        int fromIndex = baseSql.toLowerCase().indexOf("from");
+        if (fromIndex == -1) {
+            throw new IllegalArgumentException("Requête invalide : mot-clé FROM manquant");
+        }
+
+        return "SELECT COUNT(*) " + baseSql.substring(fromIndex);
     }
 }

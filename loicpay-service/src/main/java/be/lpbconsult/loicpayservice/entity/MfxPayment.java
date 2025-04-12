@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -54,10 +56,10 @@ public class MfxPayment {
     private Integer daysCovered;
 
     @Column(name = "gross_amount_paid")
-    private Float grossAmountPaid;
+    private BigDecimal grossAmountPaid;
 
     @Column(name = "total_recov")
-    private Float totalRecov;
+    private BigDecimal totalRecov;
 
     @Column(name = "payscale")
     private String payscale;
@@ -72,19 +74,19 @@ public class MfxPayment {
     private String gender;
 
     @Column(name = "recov_neo")
-    private Float recovNeo;
+    private BigDecimal recovNeo;
 
     @Column(name = "withholding_tax_amount_paid")
-    private Float withholdingTaxAmountPaid;
+    private BigDecimal withholdingTaxAmountPaid;
 
     @Column(name = "recov_net_amount")
-    private Float recovNetAmount;
+    private BigDecimal recovNetAmount;
 
     @Column(name = "recov_gross_amount")
-    private Float recovGrossAmount;
+    private BigDecimal recovGrossAmount;
 
     @Column(name = "recov_06")
-    private Float recov06;
+    private BigDecimal recov06;
 
     @Column(name = "iban")
     private String iban;
@@ -102,7 +104,7 @@ public class MfxPayment {
     private String ticketNbr;
 
     @Column(name = "net_paid")
-    private Float netPaid;
+    private BigDecimal netPaid;
 
     @Column(name = "leave_type")
     private String leaveType;
