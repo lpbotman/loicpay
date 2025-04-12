@@ -13,7 +13,8 @@
       "competent_entity": "Entité",
       "leave_type": "Congé",
       "interruption_regime": "Régime",
-      "label": "Label"
+      "label": "Label",
+      "ignored": "Ignoré"
     }
   }
 }

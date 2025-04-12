@@ -1,7 +1,9 @@
 package be.lpbconsult.loicpayservice.service;
 
 import be.lpbconsult.loicpayservice.config.QueryConfig;
-import be.lpbconsult.loicpayservice.dto.CitizenReporting;
+import be.lpbconsult.loicpayservice.dto.CitizenReportingResponse;
+import be.lpbconsult.loicpayservice.entity.CitizenReporting;
+import be.lpbconsult.loicpayservice.repository.CitizenReportingRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
@@ -12,9 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ReportingService {
@@ -24,6 +26,9 @@ public class ReportingService {
 
     @Autowired
     private QueryConfig queryConfig;
+
+    @Autowired
+    private CitizenReportingRepository citizenReportingRepository;
 
     public Object executeQuery(String queryName, Map<String, Object> params, boolean singleValue) {
         String sql = queryConfig.getQuery(queryName);
@@ -43,7 +48,7 @@ public class ReportingService {
         }
     }
 
-    public List<CitizenReporting> getCitizenReportings(String queryName, Map<String, Object> params, int offset, int limit) {
+    public List<CitizenReportingResponse> getCitizenReportings(String queryName, Map<String, Object> params, int offset, int limit) {
         String sql = queryConfig.getQuery(queryName);
         if (sql == null) {
             throw new IllegalArgumentException("Requête inconnue: " + queryName);
@@ -66,13 +71,13 @@ public class ReportingService {
                     ResultSetMetaData metaData = rs.getMetaData();
                     int columnCount = metaData.getColumnCount();
 
-                    List<CitizenReporting> results = new ArrayList<>();
+                    List<CitizenReportingResponse> results = new ArrayList<>();
 
                     while (rs.next()) {
                         String ssin = rs.getString("ssin");
                         int refMonth = rs.getInt("ref_month");
 
-                        List<CitizenReporting.LabelledValue> data = new ArrayList<>();
+                        List<CitizenReportingResponse.LabelledValue> data = new ArrayList<>();
 
                         for (int col = 1; col <= columnCount; col++) {
                             String columnName = metaData.getColumnLabel(col);
@@ -82,12 +87,12 @@ public class ReportingService {
 
                                 String value = rawValue != null ? rawValue.toString() : "";
 
-                                CitizenReporting.LabelledValue entry = new CitizenReporting.LabelledValue(columnName, value);
+                                CitizenReportingResponse.LabelledValue entry = new CitizenReportingResponse.LabelledValue(columnName, value);
                                 data.add(entry);
                             }
                         }
 
-                        CitizenReporting reporting = new CitizenReporting(ssin, refMonth, data);
+                        CitizenReportingResponse reporting = new CitizenReportingResponse(ssin, refMonth, data);
                         results.add(reporting);
                     }
 
@@ -125,4 +130,20 @@ public class ReportingService {
 
         return "SELECT COUNT(*) " + baseSql.substring(fromIndex);
     }
+
+    public void updateCitizenReporting(CitizenReporting updated) {
+        Optional<CitizenReporting> existingOpt = citizenReportingRepository
+                .findBySsinAndRefMonth(updated.getSsin(), updated.getRefMonth());
+
+        if (existingOpt.isPresent()) {
+            CitizenReporting existing = existingOpt.get();
+            existing.setLabels(updated.getLabels());
+            existing.setIgnored(updated.getIgnored());
+            citizenReportingRepository.save(existing);
+        } else {
+            citizenReportingRepository.save(updated);
+        }
+    }
+
+
 }

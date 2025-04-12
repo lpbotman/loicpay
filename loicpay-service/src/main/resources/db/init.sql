@@ -166,3 +166,13 @@ CREATE TABLE IF NOT EXISTS mfx_recovery (
 
 CREATE INDEX IF NOT EXISTS idx_mfx_recovery_ssin ON mfx_recovery (ssin);
 
+CREATE TABLE IF NOT EXISTS citizen_reporting (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ssin TEXT,
+    ref_month INTEGER,
+    labels TEXT,
+    ignored BOOLEAN DEFAULT FALSE
+);
+
+CREATE INDEX IF NOT EXISTS idx_citizen_reporting_ssin ON citizen_reporting (ssin);
+CREATE INDEX IF NOT EXISTS idx_citizen_reporting_ssin_refmonth ON citizen_reporting (ssin, ref_month);

@@ -1,11 +1,13 @@
 package be.lpbconsult.loicpayservice.controller;
 
-import be.lpbconsult.loicpayservice.dto.CitizenReporting;
+import be.lpbconsult.loicpayservice.dto.CitizenReportingResponse;
+import be.lpbconsult.loicpayservice.entity.CitizenReporting;
 import be.lpbconsult.loicpayservice.service.ReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class ReportingPaymentController {
             params.put("batchId", batchId);
 
             int offset = page * size;
-            List<CitizenReporting> results = reportingService.getCitizenReportings("getExcluSSINFromLoic", params, offset, size);
+            List<CitizenReportingResponse> results = reportingService.getCitizenReportings("getExcluSSINFromLoic", params, offset, size);
             int total = reportingService.countTotal("getExcluSSINFromLoic", params);
 
             return ResponseEntity.ok(new PaginatedCitizenReporting(results, total));
@@ -102,8 +104,19 @@ public class ReportingPaymentController {
         }
     }
 
+    @PostMapping("/citizen/update")
+    public ResponseEntity<?> updateCitizenReporting(@RequestBody CitizenReporting request) {
+        try {
+            reportingService.updateCitizenReporting(request);
+            return ResponseEntity.ok(Collections.singletonMap("status", "OK"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Server error");
+        }
+    }
+
     // DTOs internes pour les réponses JSON
     private record SSINMatchResponse(int loicCount, int mfxCount, int loicExclu, int mfxExclu) {}
     private record PaymentPlanResponse(int loicCount, int mfxCount, int allMatch) {}
-    private record PaginatedCitizenReporting(List<CitizenReporting> results, int total) {}
+    private record PaginatedCitizenReporting(List<CitizenReportingResponse> results, int total) {}
+
 }

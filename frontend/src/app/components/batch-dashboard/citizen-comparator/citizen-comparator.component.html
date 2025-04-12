@@ -22,20 +22,35 @@
 
 
       <!-- Labels -->
-      <ng-container matColumnDef="label">
-        <th mat-header-cell *matHeaderCellDef> Label </th>
+      <ng-container matColumnDef="labels">
+        <th mat-header-cell *matHeaderCellDef> Labels </th>
         <td mat-cell *matCellDef="let row">
-          <mat-chip-grid #chipList  aria-label="Liste des labels">
-            <mat-chip *ngFor="let label of row.labels" [removable]="true" (removed)="removeLabel(row, label)">
-            {{ label }}
-            <mat-icon matChipRemove>cancel</mat-icon>
+
+          <mat-chip-grid #chipList aria-label="Liste des labels" *ngIf="row.isLabelEditable || row.label">
+            <mat-chip [removable]="true" *ngIf="row.label" class="flex flex-row" (click)="removeLabel(row)">
+              <span>{{ row.label }}</span>
             </mat-chip>
-          <input
-            placeholder="Ajouter un label"
-            [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            (matChipInputTokenEnd)="addLabel($event, row)">
-        </mat-chip-grid>
+
+            <div *ngIf="row.isLabelEditable" style="position: relative">
+              <input
+                class="label-input"
+                placeholder="Ajouter un label"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="addLabel($event, row)"
+              >
+            </div>
+          </mat-chip-grid>
+          <button mat-icon-button *ngIf="!row.isLabelEditable && !row.label" (click)="row.isLabelEditable = true">
+            <mat-icon>edit</mat-icon>
+          </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ignored">
+      <th mat-header-cell *matHeaderCellDef> {{ "citizen-reporting.header.ignored" | translate }} </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-slide-toggle [checked]="row.isIgnored" (change)="toggleIgnored(row.ssin, row.refMonth, $event.checked)"></mat-slide-toggle>
       </td>
     </ng-container>
 

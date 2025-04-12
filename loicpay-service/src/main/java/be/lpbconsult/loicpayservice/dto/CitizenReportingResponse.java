@@ -7,12 +7,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CitizenReporting {
+public class CitizenReportingResponse {
     private String ssin;
     private int refMonth;
     private List<LabelledValue> data;
 
-    public CitizenReporting(String ssin, int refMonth, List<LabelledValue> data) {
+    public CitizenReportingResponse(String ssin, int refMonth, List<LabelledValue> data) {
         this.ssin = ssin;
         this.refMonth = refMonth;
         this.data = data;

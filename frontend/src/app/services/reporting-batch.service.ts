@@ -27,4 +27,8 @@ export class ReportingBatchService {
     return this.http.get<PaginatedCitizenReporting>('http://localhost:8080/api/reporting/'+criteria+'?batchId='+batchId+'&page='+page+'&size='+size);
   }
 
+  toggleIgnored(ssin: string, refMonth: number, ignored: boolean): Observable<any> {
+    console.log('toggleIgnored', ssin, refMonth, ignored);
+    return this.http.post('http://localhost:8080/api/reporting/citizen/update', { ssin, refMonth, ignored });
+  }
 }
