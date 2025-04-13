@@ -1,6 +1,13 @@
-<mat-slide-toggle [checked]="!includeIgnored" (change)="toggleIncludeIgnored($event.checked)">Filtrer les citoyens ignorés</mat-slide-toggle>
-<button mat-raised-button (click)="exportToCsv()">Exporter au format CSV</button>
-<div style="max-height: 800px; overflow-y: auto;">
+<div class="container">
+  <div class="flex flex-row space-between">
+    <mat-slide-toggle [checked]="!includeIgnored" (change)="toggleIncludeIgnored($event.checked)">Filtrer les citoyens ignorés</mat-slide-toggle>
+    <div (click)="exportToCsv()" class="pointer export">
+      <mat-icon>download</mat-icon>
+      <span>Export CSV</span>
+    </div>
+  </div>
+
+  <div style="max-height: 800px; overflow-y: auto;">
     <table mat-table [dataSource]="citizens" class="mat-elevation-z8">
 
       <!-- Données -->
@@ -32,38 +39,40 @@
               <span class="hover-strikethrough pointer">{{ row.labels }}</span>
             </mat-chip>
 
-              <input
-                class="label-input"
-                placeholder="Ajouter un label"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                (matChipInputTokenEnd)="addLabel($event, row)"
-                [hidden]="!row.isLabelEditable"
-              >
+            <input
+              class="label-input"
+              placeholder="Ajouter un label"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="addLabel($event, row)"
+              [hidden]="!row.isLabelEditable"
+            >
           </mat-chip-grid>
           <button mat-icon-button *ngIf="!row.isLabelEditable && !row.labels" (click)="row.isLabelEditable = true">
             <mat-icon class="pointer">edit</mat-icon>
           </button>
-      </td>
-    </ng-container>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="ignored">
-      <th mat-header-cell *matHeaderCellDef> {{ "citizen-reporting.header.ignored" | translate }} </th>
-      <td mat-cell *matCellDef="let row">
-        <mat-slide-toggle [checked]="row.ignored" (change)="toggleIgnored(row,$event.checked)"></mat-slide-toggle>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="ignored">
+        <th mat-header-cell *matHeaderCellDef> {{ "citizen-reporting.header.ignored" | translate }} </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-slide-toggle [checked]="row.ignored" (change)="toggleIgnored(row,$event.checked)"></mat-slide-toggle>
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <mat-paginator (page)="handlePageEvent($event)"
+                 [length]="pageTotal"
+                 [pageSize]="pageSize"
+                 [showFirstLastButtons]="false"
+                 [pageSizeOptions]="[]"
+                 [hidePageSize]="false"
+                 [pageIndex]="pageIndex"
+                 aria-label="Select page">
+  </mat-paginator>
+
 </div>
-<mat-paginator (page)="handlePageEvent($event)"
-               [length]="pageTotal"
-               [pageSize]="pageSize"
-               [showFirstLastButtons]="false"
-               [pageSizeOptions]="[]"
-               [hidePageSize]="false"
-               [pageIndex]="pageIndex"
-               aria-label="Select page">
-</mat-paginator>

@@ -24,6 +24,8 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {FormsModule} from "@angular/forms";
+import {ReportingPaginatedRequest} from "../../../dtos/ReportingPaginatedRequest.dto";
+import {filterTocriteria} from "../../../utils/params";
 
 @Component({
   selector: 'app-citizen-comparator',
@@ -60,7 +62,8 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
   batchId: string | null = '';
-  filter: string | null = '';
+  filter?: string | null;
+  params?: Map<string, any>;
 
   citizens: CitizenReporting[] = [];
 
@@ -82,6 +85,12 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.batchId = this.route.snapshot.paramMap.get('batchId');
     this.filter = this.route.snapshot.paramMap.get('filter');
+    const queryParams = this.route.snapshot.queryParams;
+    console.log('filter', this.filter);
+    this.params = new Map<string, any>(Object.entries({
+      ...queryParams,
+      batchId: this.batchId
+    }));
 
     if(!this.filter)
       throw new Error('No filter specified');
@@ -93,7 +102,15 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
     if(!this.filter)
       throw new Error('No filter specified');
 
-    this.reportingService.getCitizensByCriteria(this.batchId ? Number(this.batchId) : null, this.filter, this.pageIndex, this.pageSize, this.includeIgnored).pipe(takeUntil(this.destroy$)).subscribe(result => {
+    let params = new Map<string, any>();
+    params.set('batchId', this.batchId ? Number(this.batchId) : null);
+    let criteria:string = filterTocriteria.find(f => f.filter === this.filter)!.criteria;
+
+    console.log('params', params);
+
+    let reportingPaginatedRequest = new ReportingPaginatedRequest(this.params, this.pageIndex, this.pageSize, criteria, this.includeIgnored);
+
+    this.reportingService.getCitizensByCriteria(reportingPaginatedRequest).pipe(takeUntil(this.destroy$)).subscribe(result => {
       this.citizens = result.results;
       this.pageTotal = result.total;
       if (this.citizens.length === 0) {

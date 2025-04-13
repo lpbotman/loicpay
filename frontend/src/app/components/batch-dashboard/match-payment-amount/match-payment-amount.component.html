@@ -1,10 +1,10 @@
 <div class="header">
   <p>Correspondance des montants</p>
 </div>
-<div class="container flex flex-row" *ngIf="!isloaded">
+<div class="container flex flex-row" *ngIf="!isLoaded">
   <mat-spinner></mat-spinner>
 </div>
-<div class="container flex flex-row" *ngIf="isloaded">
+<div class="container flex flex-row" *ngIf="isLoaded">
   <div class="chart-container" style="display: block;">
     <canvas
       baseChart
@@ -17,14 +17,20 @@
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="desc">
       <th mat-header-cell *matHeaderCellDef> Description </th>
-      <td mat-cell *matCellDef="let element"> {{element.desc}} </td>
+      <td mat-cell *matCellDef="let element">
+        {{element.desc}}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="gross">
       <th mat-header-cell *matHeaderCellDef> Brut </th>
       <td mat-cell *matCellDef="let element">
-        @if (element.percent) {
-          {{element.gross | flexibleNumber}}
+        @if (element.filter) {
+          <a
+            [routerLink]="['/citizen-comparator', batchId, element.filter+'-gross']"
+            [queryParams]="element.params">
+            {{element.gross | flexibleNumber}}
+          </a>
         } @else {
           {{element.gross | flexibleNumber}}
         }
@@ -34,10 +40,14 @@
     <ng-container matColumnDef="net">
       <th mat-header-cell *matHeaderCellDef> Net </th>
       <td mat-cell *matCellDef="let element">
-        @if (element.percent) {
-          {{element.net | flexibleNumber}}
+        @if (element.filter) {
+          <a
+            [routerLink]="['/citizen-comparator', batchId, element.filter+'-net']"
+            [queryParams]="element.params">
+            {{ element.gross | flexibleNumber }}
+          </a>
         } @else {
-          {{element.net | flexibleNumber}}
+          {{ element.gross | flexibleNumber }}
         }
       </td>
     </ng-container>

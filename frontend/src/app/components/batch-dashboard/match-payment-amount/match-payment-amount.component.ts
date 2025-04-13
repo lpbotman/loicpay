@@ -14,6 +14,7 @@ import {
   MatRow, MatRowDef, MatTable
 } from "@angular/material/table";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-match-payment-amount',
@@ -31,7 +32,8 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     MatTable,
     MatHeaderCellDef,
     MatProgressSpinner,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './match-payment-amount.component.html',
   styleUrl: './match-payment-amount.component.css'
@@ -41,13 +43,13 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
   @Input() batchId!: number;
 
   displayedColumns: string[] = ['desc', 'gross', 'net'];
-  dataSource: { desc: string, gross: number, net: number }[] = [];
+  dataSource: { desc: string, gross: number, net: number, filter?: string,  params?: { [key: string]: any } }[] = [];
 
   public barChartLabels = [']0,0.05]', ']0.05,1]', ']1,10]', ']10,100]', '+100'];// Catégories
   public barChartLegend = true;
   public barChartData: any[] = [];
 
-  isloaded = false;
+  isLoaded = false;
 
   private destroy$ = new Subject<void>();
 
@@ -81,11 +83,11 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
       console.log(result);
       this.dataSource = [
         {desc: 'Montants identiques', gross: result[0], net: result[6]},
-        {desc: 'Différence de 0,05', gross: result[1], net: result[7]},
-        {desc: 'Différence entre 0,05 et 1', gross: result[1], net: result[8]},
-        {desc: 'Différence entre 1 et 10', gross: result[2], net: result[9]},
-        {desc: 'Différence entre 10 et 100', gross: result[3], net: result[10]},
-        {desc: 'Différence +100', gross: result[4], net: result[11]},
+        {desc: 'Différence de 0,05', gross: result[1], net: result[7], filter: 'amount-diff', params: {intervalLow: 0.01, intervalHigh: 0.05}},
+        {desc: 'Différence entre 0,05 et 1', gross: result[1], net: result[8], filter: 'amount-diff', params: {intervalLow: 0.06, intervalHigh: 1}},
+        {desc: 'Différence entre 1 et 10', gross: result[2], net: result[9], filter: 'amount-diff', params: {intervalLow: 1.01, intervalHigh: 10}},
+        {desc: 'Différence entre 10 et 100', gross: result[3], net: result[10], filter: 'amount-diff', params: {intervalLow: 10.01, intervalHigh: 100}},
+        {desc: 'Différence +100', gross: result[4], net: result[11], filter: 'amount-diff', params: {intervalLow: 100.01, intervalHigh: 9999}},
       ]
 
       this.barChartData = [
@@ -105,7 +107,7 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
         }
       ];
 
-      this.isloaded = true;
+      this.isLoaded = true;
     });
   }
 
@@ -114,5 +116,6 @@ export class MatchPaymentAmountComponent implements OnInit, OnDestroy{
     this.destroy$.next();
     this.destroy$.complete();
   }
+
 }
 

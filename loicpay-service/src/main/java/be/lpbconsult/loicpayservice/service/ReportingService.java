@@ -54,11 +54,17 @@ public class ReportingService {
             throw new IllegalArgumentException("Requête inconnue: " + queryName);
         }
         String sqlIncludeIgnored = " and COALESCE(r.ignored, 0) != 1";
-        String sqFinal = sql + (includeIgnored ? "" : sqlIncludeIgnored) + (limit == 0 ? "" : " LIMIT ? OFFSET ?");
+        String sqlFinal = sql + (includeIgnored ? "" : sqlIncludeIgnored) + (limit == 0 ? "" : " LIMIT ? OFFSET ?");
+
+        System.out.println("getCitizenReportings " + sqlFinal);
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
 
         Session session = entityManager.unwrap(Session.class);
         return session.doReturningWork(connection -> {
-            try (PreparedStatement stmt = connection.prepareStatement(sqFinal)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sqlFinal)) {
+
                 int i = 1;
                 for (Object paramValue : params.values()) {
                     stmt.setObject(i++, paramValue);
@@ -69,6 +75,7 @@ public class ReportingService {
                     stmt.setInt(i, offset);
                 }
                 try (ResultSet rs = stmt.executeQuery()) {
+                    System.out.println("gPreparedStatement stmt = connection.prepareStatement(sqlFinal)");
                     ResultSetMetaData metaData = rs.getMetaData();
                     int columnCount = metaData.getColumnCount();
 
@@ -99,6 +106,7 @@ public class ReportingService {
                         results.add(reporting);
                     }
 
+                    System.out.println("getCitizenReportings total: " + results.size());
                     return results;
                 }
             }

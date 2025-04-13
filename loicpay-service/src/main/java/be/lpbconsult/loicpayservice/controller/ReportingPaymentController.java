@@ -1,6 +1,7 @@
 package be.lpbconsult.loicpayservice.controller;
 
 import be.lpbconsult.loicpayservice.dto.CitizenReportingResponse;
+import be.lpbconsult.loicpayservice.dto.ReportingPaginatedRequest;
 import be.lpbconsult.loicpayservice.entity.CitizenReporting;
 import be.lpbconsult.loicpayservice.service.ReportingService;
 import be.lpbconsult.loicpayservice.utils.CsvUtils;
@@ -15,10 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/reporting")
@@ -52,6 +51,20 @@ public class ReportingPaymentController {
             int offset = page * size;
             List<CitizenReportingResponse> results = reportingService.getCitizenReportings("getExcluSSINFromLoic", params, offset, size, includeIgnored);
             int total = reportingService.countTotal("getExcluSSINFromLoic", params);
+
+            return ResponseEntity.ok(new PaginatedCitizenReporting(results, total));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Server error " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/amount/diff")
+    public ResponseEntity<?> getAmountDiff(@RequestBody ReportingPaginatedRequest request) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            int offset = request.getPage() * request.getSize();
+            List<CitizenReportingResponse> results = reportingService.getCitizenReportings("getCitizenGrossAmountDiff", params, offset, request.getSize(), request.isIncludeIgnored());
+            int total = reportingService.countTotal("getCitizenGrossAmountDiff", params);
 
             return ResponseEntity.ok(new PaginatedCitizenReporting(results, total));
         } catch (Exception e) {
@@ -111,6 +124,21 @@ public class ReportingPaymentController {
         }
     }
 
+    @PostMapping("/citizen/get-citizens-by-criteria")
+    public ResponseEntity<?> getCitizensByCriteria(@RequestBody ReportingPaginatedRequest request) {
+        setIntervalParams(request.getParams());
+
+        try {
+            int offset = request.getPage() * request.getSize();
+            List<CitizenReportingResponse> results = reportingService.getCitizenReportings(request.getQuery(), request.getParams(), offset, request.getSize(), request.isIncludeIgnored());
+            int total = reportingService.countTotal(request.getQuery(), request.getParams());
+            return ResponseEntity.ok(new PaginatedCitizenReporting(results, total));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Server error " + e.getMessage());
+        }
+    }
+
     @PostMapping("/citizen/update")
     public ResponseEntity<?> updateCitizenReporting(@RequestBody CitizenReporting request) {
         try {
@@ -138,6 +166,28 @@ public class ReportingPaymentController {
                 .body(csv);
     }
 
+
+    private void setIntervalParams(Map<String, Object> params) {
+        if (params != null && params.containsKey("intervalLow") && params.containsKey("intervalHigh")) {
+            BigDecimal intervalLowObj = new BigDecimal((String)params.get("intervalLow"));
+            BigDecimal intervalHighObj = new BigDecimal((String)params.get("intervalHigh"));
+            System.out.println("intervalLowObj " + intervalLowObj);
+            System.out.println("intervalHighObj " + intervalHighObj);
+
+
+            System.out.println("intervalLowObj instanceof Number && intervalHighObj instanceof Number");
+            double intervalLow = ((Number) intervalLowObj).doubleValue();
+            double intervalHigh = ((Number) intervalHighObj).doubleValue();
+
+            params.put("intervalLowUp", intervalLow);
+            params.put("intervalHighUp", intervalHigh);
+            params.put("intervalHighDown", -1 * intervalHigh);
+            params.put("intervalLowDown", -1 * intervalLow);
+
+            params.remove("intervalLow");
+            params.remove("intervalHigh");
+        }
+    }
     // DTOs internes pour les réponses JSON
     private record SSINMatchResponse(int loicCount, int mfxCount, int loicExclu, int mfxExclu) {}
     private record PaymentPlanResponse(int loicCount, int mfxCount, int allMatch) {}

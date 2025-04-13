@@ -14,7 +14,11 @@
       "leave_type": "Congé",
       "interruption_regime": "Régime",
       "labels": "Label",
-      "ignored": "Ignoré"
+      "ignored": "Ignoré",
+      "loic_gross_amount_paid": "Loic brut",
+      "mfx_gross_amount_paid": "MFX brut",
+      "loic_net_amount_paid": "Loic net",
+      "mfx_net_amount_paid": "MFX net"
     }
   }
 }
