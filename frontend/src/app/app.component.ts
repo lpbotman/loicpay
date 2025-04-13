@@ -24,10 +24,13 @@ export class AppComponent {
   }
 
   openImportWizard() {
-    this.importDialog.open(ImportPaymentBatchDialogComponent, {
+    const dialogRef =this.importDialog.open(ImportPaymentBatchDialogComponent, {
       width: '800px',
       minHeight: '400px',
       maxWidth: '800px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.router.navigate(['/batch-dashboard', result]);
     });
   }
 

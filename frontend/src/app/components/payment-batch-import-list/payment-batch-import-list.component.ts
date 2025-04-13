@@ -6,6 +6,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ImportPaymentBatchDialogComponent} from "../import-payment-batch-dialog/import-payment-batch-dialog.component";
 import {MatIcon} from "@angular/material/icon";
 import {Router} from "@angular/router";
+import {FlexibleNumberPipe} from "../../pipes/flexible-number.pipe";
 
 @Component({
   selector: 'app-payment-batch-import-list',
@@ -14,6 +15,7 @@ import {Router} from "@angular/router";
     MatCardContent,
     NgForOf,
     MatIcon,
+    FlexibleNumberPipe,
   ],
   templateUrl: './payment-batch-import-list.component.html',
   standalone: true,
@@ -30,10 +32,6 @@ export class PaymentBatchImportListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllBatchPayment();
-  }
-
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
   }
 
   openBatchImport(id: number) {

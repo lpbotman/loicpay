@@ -29,7 +29,6 @@ import {Subject, takeUntil} from "rxjs";
     MatInput,
     MatDialogTitle,
     MatProgressBar,
-    NgIf,
     FileUploadPickerComponent,
   ],
   templateUrl: './import-payment-batch-dialog.component.html',
@@ -113,7 +112,7 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
     this.progressInfo.task = 'Calcul du score';
     await this.updateScore();
 
-    //this.dialogRef.close();
+    this.dialogRef.close(id);
   }
 
   async updateScore() {
@@ -136,27 +135,39 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
   }
 
   async importMfxFile(file: File): Promise<void> {
-    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-    reader.onload = async (event: any) => {
-      const content = event.target.result as string;
-      const lines = content.split('\n').filter(line => line.trim() !== '');
+      reader.onload = async (event: any) => {
+        try {
+          const content = event.target.result as string;
+          const lines = content.split('\n').filter(line => line.trim() !== '');
 
-      const linesPayments = lines.filter(line => line[0] !== '3');
-      const linesRecoveries = lines.filter(line => line[0] === '3');
+          const linesPayments = lines.filter(line => line[0] !== '3');
+          const linesRecoveries = lines.filter(line => line[0] === '3');
 
-      const recordsPayments = linesPayments.map(line => this.parseFixedWidthLinePayment(line));
-      const recordsRecoveries = linesRecoveries.map(line => this.parseFixedWidthLineRecovery(line));
+          const recordsPayments = linesPayments.map(line => this.parseFixedWidthLinePayment(line));
+          const recordsRecoveries = linesRecoveries.map(line => this.parseFixedWidthLineRecovery(line));
 
-      // Envois séquentiels
-      await this.uploadChunksSequentially(recordsPayments, UploadFileType.MFX_PAYMENT);
-      await this.uploadChunksSequentially(recordsRecoveries, UploadFileType.MFX_RECOVERY);
+          // Envois séquentiels
+          await this.uploadChunksSequentially(recordsPayments, UploadFileType.MFX_PAYMENT);
+          await this.uploadChunksSequentially(recordsRecoveries, UploadFileType.MFX_RECOVERY);
 
-      console.log('Tous les envois terminés.');
-    };
+          console.log('Tous les envois terminés.');
+          resolve(); // Résolution de la Promise quand tout est fini
+        } catch (error) {
+          reject(error); // Gestion des erreurs
+        }
+      };
 
-    reader.readAsText(file);
+      reader.onerror = (error) => {
+        reject(error); // En cas d'erreur de lecture du fichier
+      };
+
+      reader.readAsText(file);
+    });
   }
+
 
   private async uploadChunksSequentially(records: any[], uploadFileType: UploadFileType): Promise<void> {
     for (let i = 0; i < records.length; i += this.CHUNK_SIZE) {

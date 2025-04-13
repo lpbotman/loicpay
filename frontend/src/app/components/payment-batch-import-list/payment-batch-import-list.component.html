@@ -3,7 +3,7 @@
   <mat-card appearance="outlined" *ngFor="let batch of batchPayments">
     <mat-card-content (click)="openBatchImport(batch.id)">
       <span>{{ batch.name }}</span>
-      <span>{{ batch.score }}%</span>
+      <span>{{ batch.score | flexibleNumber }}%</span>
       <mat-icon>chevron_right</mat-icon>
     </mat-card-content>
   </mat-card>

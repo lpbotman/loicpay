@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/batch")
@@ -27,13 +28,19 @@ public class BatchPaymentController {
         return batchPaymentService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Optional<BatchPayment> getPaymentBatch(@PathVariable Long id) {
+        return batchPaymentService.find(id);
+    }
+
+
     @PostMapping("/new")
     public ResponseEntity<Long> addPaymentBatch(@RequestBody BatchPayment batchPayment) {
         Long id = batchPaymentService.addBatchPayment(batchPayment);
         return ResponseEntity.ok(id);
     }
 
-    @PostMapping("/calculate-score")
+    @GetMapping("/calculate-score")
     public ResponseEntity<?> calculateScore(@RequestParam Long batchId) {
         try {
             Map<String, Object> params = new HashMap<>();

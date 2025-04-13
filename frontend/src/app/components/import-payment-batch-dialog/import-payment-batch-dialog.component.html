@@ -66,15 +66,15 @@
     <!-- Étape 3 -->
     <mat-step [editable]="false">
       <ng-template matStepLabel>Confirmation</ng-template>
-      <p>Tu es prêt à importer ce batch de paiements.</p>
+      <p class="label-import">Tu es prêt à importer ce batch de paiements.</p>
 
-      <span *ngIf="isImporting">
+      <span>
         {{ progressInfo.task }}
-        <mat-progress-bar #fileProgress mode="determinate" [value]="progressInfo.progress" style="width: 400px;"></mat-progress-bar>
+        <mat-progress-bar #fileProgress mode="determinate" [value]="progressInfo.progress" style="width: 100%;"></mat-progress-bar>
       </span>
 
-      <div>
-        <button mat-raised-button color="primary" (click)="submit()">Importer</button>
+      <div class="import-actions">
+        <button mat-raised-button color="primary" (click)="submit()" [disabled]="isImporting">Importer</button>
         <button mat-button (click)="close()">Annuler</button>
       </div>
     </mat-step>

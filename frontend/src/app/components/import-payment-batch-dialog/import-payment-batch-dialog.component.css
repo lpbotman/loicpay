@@ -14,3 +14,11 @@
 .file-box {
   flex: 1;
 }
+
+.label-import {
+  margin-bottom: 20px;
+}
+
+.import-actions {
+  margin-top: 20px;
+}

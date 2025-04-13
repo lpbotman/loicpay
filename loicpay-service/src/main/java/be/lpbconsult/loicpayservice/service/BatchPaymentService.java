@@ -19,6 +19,10 @@ public class BatchPaymentService {
         return batchPaymentRepository.findAll();
     }
 
+    public Optional<BatchPayment> find(Long id) {
+        return batchPaymentRepository.findById(id);
+    }
+
     // Méthode pour ajouter un PaymentBatch
     public Long addBatchPayment(BatchPayment batchPayment) {
         BatchPayment savedBatchPayment = batchPaymentRepository.save(batchPayment);
@@ -36,4 +40,5 @@ public class BatchPaymentService {
             batchPaymentRepository.save(batchPayment.get());
         }
     }
+
 }

@@ -1,3 +1,7 @@
+<div class="header">
+  {{ batchPayment.name }}
+  <span class="score">{{ batchPayment.score | flexibleNumber }}%</span>
+</div>
 <div class="container flex">
   <div class="criteria-container">
     <app-match-ssin [batchId]="batchId"></app-match-ssin>
