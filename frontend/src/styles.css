@@ -26,3 +26,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .pointer {
   cursor: pointer;
 }
+
+.hover-strikethrough:hover {
+  text-decoration: line-through;
+}

@@ -48,25 +48,26 @@ public class ReportingService {
         }
     }
 
-    public List<CitizenReportingResponse> getCitizenReportings(String queryName, Map<String, Object> params, int offset, int limit) {
+    public List<CitizenReportingResponse> getCitizenReportings(String queryName, Map<String, Object> params, int offset, int limit, boolean includeIgnored) {
         String sql = queryConfig.getQuery(queryName);
         if (sql == null) {
             throw new IllegalArgumentException("Requête inconnue: " + queryName);
         }
-
-        String sqlWithPaginator = sql + " LIMIT ? OFFSET ?";
+        String sqlIncludeIgnored = " and COALESCE(r.ignored, 0) != 1";
+        String sqFinal = sql + (includeIgnored ? "" : sqlIncludeIgnored) + (limit == 0 ? "" : " LIMIT ? OFFSET ?");
 
         Session session = entityManager.unwrap(Session.class);
         return session.doReturningWork(connection -> {
-            try (PreparedStatement stmt = connection.prepareStatement(sqlWithPaginator)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sqFinal)) {
                 int i = 1;
                 for (Object paramValue : params.values()) {
                     stmt.setObject(i++, paramValue);
                 }
 
-                stmt.setInt(i++, limit);
-                stmt.setInt(i, offset);
-
+                if (limit > 0) {
+                    stmt.setInt(i++, limit);
+                    stmt.setInt(i, offset);
+                }
                 try (ResultSet rs = stmt.executeQuery()) {
                     ResultSetMetaData metaData = rs.getMetaData();
                     int columnCount = metaData.getColumnCount();
@@ -76,13 +77,15 @@ public class ReportingService {
                     while (rs.next()) {
                         String ssin = rs.getString("ssin");
                         int refMonth = rs.getInt("ref_month");
+                        String labels = rs.getString("labels");
+                        boolean ignored = rs.getBoolean("ignored");
 
                         List<CitizenReportingResponse.LabelledValue> data = new ArrayList<>();
 
                         for (int col = 1; col <= columnCount; col++) {
                             String columnName = metaData.getColumnLabel(col);
 
-                            if (!"ssin".equalsIgnoreCase(columnName) && !"ref_month".equalsIgnoreCase(columnName)) {
+                            if (!"ssin".equalsIgnoreCase(columnName) && !"ref_month".equalsIgnoreCase(columnName) && !"labels".equalsIgnoreCase(columnName) && !"ignored".equalsIgnoreCase(columnName)) {
                                 Object rawValue = rs.getObject(col);
 
                                 String value = rawValue != null ? rawValue.toString() : "";
@@ -92,7 +95,7 @@ public class ReportingService {
                             }
                         }
 
-                        CitizenReportingResponse reporting = new CitizenReportingResponse(ssin, refMonth, data);
+                        CitizenReportingResponse reporting = new CitizenReportingResponse(ssin, refMonth, data,ignored,labels);
                         results.add(reporting);
                     }
 
@@ -101,6 +104,8 @@ public class ReportingService {
             }
         });
     }
+
+
 
     public int countTotal(String queryName, Map<String, Object> params) {
         String baseSql = queryConfig.getQuery(queryName);

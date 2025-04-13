@@ -23,12 +23,17 @@ export class ReportingBatchService {
     return this.http.get('http://localhost:8080/api/reporting/amount-diff?batchId='+batchId+'&amountType='+amountType+'&intervalLow='+intervalLow+'&intervalHigh='+intervalHigh);
   }
 
-  getCitizensByCriteria(batchId: number | null, criteria: string, page: number, size: number) : Observable<PaginatedCitizenReporting> {
-    return this.http.get<PaginatedCitizenReporting>('http://localhost:8080/api/reporting/'+criteria+'?batchId='+batchId+'&page='+page+'&size='+size);
+  getCitizensByCriteria(batchId: number | null, criteria: string, page: number, size: number, includeIgnored: boolean) : Observable<PaginatedCitizenReporting> {
+    return this.http.get<PaginatedCitizenReporting>('http://localhost:8080/api/reporting/'+criteria+'?batchId='+batchId+'&page='+page+'&size='+size+'&includeIgnored='+includeIgnored);
   }
 
-  toggleIgnored(ssin: string, refMonth: number, ignored: boolean): Observable<any> {
-    console.log('toggleIgnored', ssin, refMonth, ignored);
-    return this.http.post('http://localhost:8080/api/reporting/citizen/update', { ssin, refMonth, ignored });
+  updateCitizenReporting(ssin: string, refMonth: number, labels: string | null, ignored: boolean): Observable<any> {
+    return this.http.post('http://localhost:8080/api/reporting/citizen/update', { ssin, refMonth, labels, ignored });
+  }
+
+  exportCsv(query: string, batchId: number | null): Observable<Blob> {
+    return this.http.get('http://localhost:8080/api/reporting/export?query='+query+'&batchId='+batchId, {
+      responseType: 'blob'
+    });
   }
 }

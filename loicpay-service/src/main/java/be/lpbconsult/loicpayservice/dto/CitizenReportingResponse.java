@@ -11,11 +11,15 @@ public class CitizenReportingResponse {
     private String ssin;
     private int refMonth;
     private List<LabelledValue> data;
+    private boolean ignored;
+    private String labels;
 
-    public CitizenReportingResponse(String ssin, int refMonth, List<LabelledValue> data) {
+    public CitizenReportingResponse(String ssin, int refMonth, List<LabelledValue> data, boolean ignored, String labels) {
         this.ssin = ssin;
         this.refMonth = refMonth;
         this.data = data;
+        this.ignored = ignored;
+        this.labels = labels;
     }
 
     @Getter

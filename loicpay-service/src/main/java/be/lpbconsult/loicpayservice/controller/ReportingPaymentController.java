@@ -3,10 +3,18 @@ package be.lpbconsult.loicpayservice.controller;
 import be.lpbconsult.loicpayservice.dto.CitizenReportingResponse;
 import be.lpbconsult.loicpayservice.entity.CitizenReporting;
 import be.lpbconsult.loicpayservice.service.ReportingService;
+import be.lpbconsult.loicpayservice.utils.CsvUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,13 +45,12 @@ public class ReportingPaymentController {
     }
 
     @GetMapping("/exclu-loic")
-    public ResponseEntity<?> getExcluLoic(@RequestParam Integer batchId, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<?> getExcluLoic(@RequestParam Integer batchId, @RequestParam int page, @RequestParam int size, @RequestParam boolean includeIgnored) {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("batchId", batchId);
-
             int offset = page * size;
-            List<CitizenReportingResponse> results = reportingService.getCitizenReportings("getExcluSSINFromLoic", params, offset, size);
+            List<CitizenReportingResponse> results = reportingService.getCitizenReportings("getExcluSSINFromLoic", params, offset, size, includeIgnored);
             int total = reportingService.countTotal("getExcluSSINFromLoic", params);
 
             return ResponseEntity.ok(new PaginatedCitizenReporting(results, total));
@@ -112,6 +119,23 @@ public class ReportingPaymentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Server error");
         }
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<Resource> exportCsv(@RequestParam String query, @RequestParam Integer batchId) throws IOException {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("batchId", batchId);
+        List<CitizenReportingResponse> results = reportingService.getCitizenReportings("getExcluSSINFromLoic", params, 0, 0, true);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        CsvUtils.writeReportingsToCsv(results, outputStream);
+        ByteArrayResource csv = new ByteArrayResource(outputStream.toByteArray());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=citizens-"+query+".csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(csv);
     }
 
     // DTOs internes pour les réponses JSON

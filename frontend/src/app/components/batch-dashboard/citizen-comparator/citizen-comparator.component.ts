@@ -10,7 +10,7 @@ import {
 } from "@angular/material/table";
 import {
   MatChip, MatChipGrid, MatChipInput,
-  MatChipInputEvent, MatChipOption, MatChipSet,
+  MatChipInputEvent,
 } from "@angular/material/chips";
 import {MatIcon} from "@angular/material/icon";
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
@@ -21,11 +21,9 @@ import {debounceTime, Subject, switchMap, takeUntil} from "rxjs";
 import {CitizenReporting} from "../../../dtos/CitizenReporting.dto";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {TranslatePipe} from "@ngx-translate/core";
-import {MatIconButton} from "@angular/material/button";
-import {MatFormField} from "@angular/material/input";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {FormsModule} from "@angular/forms";
-import * as console from "node:console";
 
 @Component({
   selector: 'app-citizen-comparator',
@@ -51,6 +49,7 @@ import * as console from "node:console";
     MatChipGrid,
     MatSlideToggle,
     FormsModule,
+    MatButton,
   ],
   standalone: true,
   templateUrl: './citizen-comparator.component.html',
@@ -70,8 +69,9 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
   pageIndex: number = 0;
   pageSize: number = 50;
   pageTotal: number = 0;
+  includeIgnored: boolean = false;
 
-  private toggleIgnoredSubjects: Map<string, Subject<{ ssin: string, refMonth: number, isIgnored: boolean }>> = new Map();
+  private rowSubjects: Map<string, Subject<{ ssin: string, refMonth: number, labels: string | null, isIgnored: boolean }>> = new Map();
 
 
   private destroy$ = new Subject<void>();
@@ -93,7 +93,7 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
     if(!this.filter)
       throw new Error('No filter specified');
 
-    this.reportingService.getCitizensByCriteria(this.batchId ? Number(this.batchId) : null, this.filter, this.pageIndex, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe(result => {
+    this.reportingService.getCitizensByCriteria(this.batchId ? Number(this.batchId) : null, this.filter, this.pageIndex, this.pageSize, this.includeIgnored).pipe(takeUntil(this.destroy$)).subscribe(result => {
       this.citizens = result.results;
       this.pageTotal = result.total;
       if (this.citizens.length === 0) {
@@ -114,12 +114,14 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
     const value = (event.value || '').trim();
     console.log('addLabel', value, row);
     row.isLabelEditable = false;
-    row.label = value;
+    row.labels = value;
+    this.updateRow(row);
     event.chipInput!.clear();
   }
 
   removeLabel(row: any): void {
-    row.label = null;
+    row.labels = null;
+    this.updateRow(row);
   }
 
   handlePageEvent(e: PageEvent) {
@@ -128,28 +130,55 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  toggleIgnored(ssin: string, refMonth: number, isIgnored: boolean) {
-    const key = `${ssin}-${refMonth}`;
+  toggleIgnored(row: CitizenReporting, isIgnored: boolean) {
+    row.isIgnored = isIgnored;
+    this.updateRow(row);
+  }
 
-    if (!this.toggleIgnoredSubjects.has(key)) {
-      const subject = new Subject<{ ssin: string, refMonth: number, isIgnored: boolean }>();
-      this.toggleIgnoredSubjects.set(key, subject);
+  updateRow(row: CitizenReporting) {
+    console.log('updateRow', row);
+    const key = `${row.ssin}-${row.refMonth}`;
+
+    if (!this.rowSubjects.has(key)) {
+      const subject = new Subject<{ ssin: string, refMonth: number, labels: string | null, isIgnored: boolean }>();
+      this.rowSubjects.set(key, subject);
 
       subject.pipe(
         debounceTime(300),
         switchMap(data =>
-          this.reportingService.toggleIgnored(data.ssin, data.refMonth, data.isIgnored)
+          this.reportingService.updateCitizenReporting(data.ssin, data.refMonth, data.labels ?? null, data.isIgnored)
         )
       ).subscribe();
     }
 
-    this.toggleIgnoredSubjects.get(key)!.next({ ssin, refMonth, isIgnored });
+    this.rowSubjects.get(key)!.next({
+      ssin: row.ssin,
+      refMonth: row.refMonth,
+      labels: row.labels ?? null,
+      isIgnored: row.isIgnored
+    });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.toggleIgnoredSubjects.forEach(subject => subject.complete());
-    this.toggleIgnoredSubjects.clear();
+    this.rowSubjects.forEach(subject => subject.complete());
+    this.rowSubjects.clear();
+  }
+
+  toggleIncludeIgnored(checked: boolean) {
+    this.includeIgnored = !checked;
+    this.loadData();
+  }
+
+  exportToCsv() {
+    this.reportingService.exportCsv(this.filter!, this.batchId ? Number(this.batchId) : null).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'citizen-'+ this.filter+'.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
   }
 }
