@@ -23,8 +23,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   justify-content: space-between;
 }
 
+.align-items-center {
+  align-items: center;
+}
+
 .gap-10 {
   gap: 10px;
+}
+
+.gap-20 {
+  gap: 20px;
 }
 
 .pointer {

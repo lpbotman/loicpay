@@ -1,10 +1,31 @@
 <div class="header">
-  {{ batchPayment.name }}
-  <span class="score">{{ batchPayment.score | flexibleNumber }}%</span>
+
+  <mat-form-field *ngIf="allBatchPayments && allBatchPayments.length > 1" appearance="outline" class="compare-batch-select">
+    <mat-label>Comparaison avec</mat-label>
+    <mat-select (selectionChange)="onChangeBatchCompare($event.value)">
+      <mat-option [value]="null"></mat-option>
+      <ng-container *ngFor="let batch of allBatchPayments">
+        <mat-option [value]="batch.id">{{ batch.name }}</mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="flex flex-row gap-20 align-items-center">
+    <p class="batch-name">{{ batchPayment?.name }}</p>
+    <div class="score-container">
+      <span>Score</span>
+      <span class="score">
+      {{ batchPayment?.score | flexibleNumber }}
+    </span>
+    </div>
+  </div>
+
+
+
 </div>
 <div class="container flex">
   <div class="criteria-container">
-    <app-match-ssin [batchId]="batchId"></app-match-ssin>
+    <app-match-ssin [batchId]="batchId" [compareBatchId]="selectedBatchId"></app-match-ssin>
   </div>
   <div class="criteria-container">
    <app-match-payment-plan [batchId]="batchId"></app-match-payment-plan>

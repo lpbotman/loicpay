@@ -1,9 +1,21 @@
 <div class="container">
 
+  <div class="flex flex-end new-batch-button">
+    <button mat-fab extended (click)="openImportWizard()">Importer un batch de paiements</button>
+  </div>
+
   <mat-card appearance="outlined" *ngFor="let batch of batchPayments">
     <mat-card-content (click)="openBatchImport(batch.id)">
-      <span>{{ batch.name }}</span>
-      <span>{{ batch.score | flexibleNumber }}%</span>
+
+      <div class="flex flex-row gap-20 align-items-center">
+        <div class="score-container">
+          <span>Score</span>
+          <span class="score">
+            {{ batch.score | flexibleNumber }}
+          </span>
+        </div>
+        <p class="batch-name">{{ batch.name }}</p>
+      </div>
       <mat-icon>chevron_right</mat-icon>
     </mat-card-content>
   </mat-card>

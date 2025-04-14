@@ -15,7 +15,7 @@ import {
 import {MatIcon} from "@angular/material/icon";
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {NgForOf, NgIf} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {ReportingBatchService} from "../../../services/reporting-batch.service";
 import {debounceTime, Subject, switchMap, takeUntil} from "rxjs";
 import {CitizenReporting} from "../../../dtos/CitizenReporting.dto";
@@ -51,7 +51,7 @@ import {filterTocriteria} from "../../../utils/params";
     MatChipGrid,
     MatSlideToggle,
     FormsModule,
-    MatButton,
+    RouterLink,
   ],
   standalone: true,
   templateUrl: './citizen-comparator.component.html',

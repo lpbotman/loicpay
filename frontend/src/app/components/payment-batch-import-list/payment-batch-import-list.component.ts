@@ -7,6 +7,7 @@ import {ImportPaymentBatchDialogComponent} from "../import-payment-batch-dialog/
 import {MatIcon} from "@angular/material/icon";
 import {Router} from "@angular/router";
 import {FlexibleNumberPipe} from "../../pipes/flexible-number.pipe";
+import {MatFabButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-payment-batch-import-list',
@@ -16,17 +17,17 @@ import {FlexibleNumberPipe} from "../../pipes/flexible-number.pipe";
     NgForOf,
     MatIcon,
     FlexibleNumberPipe,
+    MatFabButton,
   ],
   templateUrl: './payment-batch-import-list.component.html',
   standalone: true,
   styleUrl: './payment-batch-import-list.component.css'
 })
 export class PaymentBatchImportListComponent implements OnInit {
-  selectedFile!: File;
-  stats: any;
   batchPayments: any[] = [];
 
-  constructor(private paymentBatchService: PaymentBatchService,
+  constructor(private importDialog: MatDialog,
+              private paymentBatchService: PaymentBatchService,
               private router: Router) {
   }
 
@@ -42,6 +43,17 @@ export class PaymentBatchImportListComponent implements OnInit {
     this.paymentBatchService.getAllBatchPayment().subscribe((response) => {
       console.log('loadAllBatchPayment',response);
       this.batchPayments = response;
+    });
+  }
+
+  openImportWizard() {
+    const dialogRef =this.importDialog.open(ImportPaymentBatchDialogComponent, {
+      width: '800px',
+      minHeight: '400px',
+      maxWidth: '800px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.router.navigate(['/batch-dashboard', result]);
     });
   }
 }

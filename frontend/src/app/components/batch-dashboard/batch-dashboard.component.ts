@@ -7,6 +7,10 @@ import {MatchPaymentAmountComponent} from "./match-payment-amount/match-payment-
 import {Subject, takeUntil} from "rxjs";
 import {PaymentBatchService} from "../../services/payment-batch.service";
 import {FlexibleNumberPipe} from "../../pipes/flexible-number.pipe";
+import {MatFormField, MatLabel} from "@angular/material/input";
+import {MatSelect} from "@angular/material/select";
+import {MatOption} from "@angular/material/core";
+import {NgForOf, NgIf} from "@angular/common";
 
 interface onDestroy {
 }
@@ -17,7 +21,13 @@ interface onDestroy {
     MatchSsinComponent,
     MatchPaymentPlanComponent,
     MatchPaymentAmountComponent,
-    FlexibleNumberPipe
+    FlexibleNumberPipe,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    NgIf,
+    NgForOf
   ],
   templateUrl: './batch-dashboard.component.html',
   styleUrl: './batch-dashboard.component.css'
@@ -26,8 +36,10 @@ export class BatchDashboardComponent implements OnInit, OnDestroy {
   batchId: number;
   batchPayment: any;
   private $destroy$: Subject<void> = new Subject<void>();
+  protected allBatchPayments: any;
+  selectedBatchId: number | null = null;
 
-  constructor(private route: ActivatedRoute, private reportingService: ReportingBatchService, private batchService: PaymentBatchService) {
+  constructor(private route: ActivatedRoute, private batchService: PaymentBatchService) {
     this.batchId = Number(this.route.snapshot.paramMap.get('id'));
     if (isNaN(this.batchId)) {
       throw new Error('Batch ID invalide');
@@ -38,6 +50,10 @@ export class BatchDashboardComponent implements OnInit, OnDestroy {
     this.batchService.getBatchPayment(this.batchId).pipe(takeUntil(this.$destroy$)).subscribe(batchPayment => {
       this.batchPayment = batchPayment;
     });
+
+    this.batchService.getAllBatchPayment().pipe(takeUntil(this.$destroy$)).subscribe(batchPayments => {
+      this.allBatchPayments = batchPayments;
+    });
   }
 
   ngOnDestroy(): void {
@@ -45,5 +61,7 @@ export class BatchDashboardComponent implements OnInit, OnDestroy {
     this.$destroy$.complete();
   }
 
-
+  onChangeBatchCompare(value: number) {
+    this.selectedBatchId = value;
+  }
 }

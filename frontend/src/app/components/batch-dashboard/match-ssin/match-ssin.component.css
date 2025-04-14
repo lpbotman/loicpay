@@ -41,3 +41,7 @@ a {
 canvas {
   width: 200px;
 }
+
+.compare-column {
+  background-color: #ececec;
+}
