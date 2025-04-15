@@ -11,7 +11,7 @@
 
   <div class="flex flex-row gap-20 align-items-center">
     <p class="batch-name">{{ batchPayment?.name }}</p>
-    <div class="score-container">
+    <div class="score-container pointer" (click)="updateScore()">
       <span>Score</span>
       <span class="score">
       {{ batchPayment?.score | flexibleNumber }}

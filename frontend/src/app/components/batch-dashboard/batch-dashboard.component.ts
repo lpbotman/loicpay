@@ -61,4 +61,10 @@ export class BatchDashboardComponent implements OnInit, OnDestroy {
   onChangeBatchCompare(value: number) {
     this.selectedBatchId = value;
   }
+
+  updateScore() {
+    this.batchService.updateScore(this.batchPayment?.id).pipe(takeUntil(this.$destroy$)).subscribe(response => {
+      this.batchPayment.score = response.matchPercent;
+    });
+  }
 }
