@@ -1,12 +1,8 @@
 package be.lpbconsult.loicpayservice.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
 public class CitizenReportingResponse {
     private String ssin;
     private int refMonth;
@@ -22,14 +18,68 @@ public class CitizenReportingResponse {
         this.labels = labels;
     }
 
-    @Getter
-    @Setter
+    public String getSsin() {
+        return ssin;
+    }
+
+    public void setSsin(String ssin) {
+        this.ssin = ssin;
+    }
+
+    public int getRefMonth() {
+        return refMonth;
+    }
+
+    public void setRefMonth(int refMonth) {
+        this.refMonth = refMonth;
+    }
+
+    public List<LabelledValue> getData() {
+        return data;
+    }
+
+    public void setData(List<LabelledValue> data) {
+        this.data = data;
+    }
+
+    public boolean isIgnored() {
+        return ignored;
+    }
+
+    public void setIgnored(boolean ignored) {
+        this.ignored = ignored;
+    }
+
+    public String getLabels() {
+        return labels;
+    }
+
+    public void setLabels(String labels) {
+        this.labels = labels;
+    }
+
     public static class LabelledValue {
         private String key;
         private String value;
 
         public LabelledValue(String key, String value) {
             this.key = key;
+            this.value = value;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
             this.value = value;
         }
     }

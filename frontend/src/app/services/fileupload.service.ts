@@ -4,10 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import * as Papa from 'papaparse';
 import { Observable } from 'rxjs';
 import {UploadFileType} from "../enums/upload-file-type.enum";
-import {LoicPaymentImport} from "../dtos/LoicPaymentImport.dto";
-import {LoicRecoveryImport} from "../dtos/LoicRecoveryImport.dto";
-import {MfxPaymentImport} from "../dtos/MfxPaymentImport.dto";
-import {MfxRecoveryImport} from "../dtos/MfxRecoveryImport.dto";
+import {LoicImport} from "../dtos/LoicImport.dto";
+import {MfxImport} from "../dtos/MfxImport.dto";
+import {API_BASE_URL} from "../utils/params";
 
 @Injectable({
   providedIn: 'root',
@@ -33,29 +32,29 @@ export class FileUploadService {
 
   uploadParsedData(idBatch:number, data: any, uploadFileType: UploadFileType): Observable<any> {
     if (uploadFileType === UploadFileType.LOIC_PAYMENT) {
-      let loicPaymentImport = new LoicPaymentImport();
+      let loicPaymentImport = new LoicImport();
       loicPaymentImport.batchId = idBatch;
-      loicPaymentImport.loicPayments = data;
-      return this.http.post('http://localhost:8080/api/payment/loic/add', loicPaymentImport);
+      loicPaymentImport.loicRecords = data;
+      return this.http.post(API_BASE_URL+'/payment/loic/add', loicPaymentImport);
     }
     else if (uploadFileType === UploadFileType.LOIC_RECOVERY) {
-      let loicRecoveryImport = new LoicRecoveryImport();
+      let loicRecoveryImport = new LoicImport();
       loicRecoveryImport.batchId = idBatch;
-      loicRecoveryImport.loicRecoveries = data;
-      return this.http.post('http://localhost:8080/api/recovery/loic/add', loicRecoveryImport);
+      loicRecoveryImport.loicRecords = data;
+      return this.http.post(API_BASE_URL+'/recovery/loic/add', loicRecoveryImport);
     }
     else if (uploadFileType === UploadFileType.MFX_PAYMENT) {
-      let mfxPaymentImport = new MfxPaymentImport();
+      let mfxPaymentImport = new MfxImport();
       mfxPaymentImport.batchId = idBatch;
-      mfxPaymentImport.mfxPayments = data;
+      mfxPaymentImport.mfxRecords = data;
       console.log(mfxPaymentImport);
-      return this.http.post('http://localhost:8080/api/payment/mfx/add', mfxPaymentImport);
+      return this.http.post(API_BASE_URL+'/payment/mfx/add', mfxPaymentImport);
     }
     else if (uploadFileType === UploadFileType.MFX_RECOVERY) {
-      let mfxRecoveryImport = new MfxRecoveryImport();
+      let mfxRecoveryImport = new MfxImport();
       mfxRecoveryImport.batchId = idBatch;
-      mfxRecoveryImport.mfxRecoveries = data;
-      return this.http.post('http://localhost:8080/api/recovery/mfx/add', mfxRecoveryImport);
+      mfxRecoveryImport.mfxRecords = data;
+      return this.http.post(API_BASE_URL+'/recovery/mfx/add', mfxRecoveryImport);
     }
     else {
       throw new Error('Type de fichier inconnu');

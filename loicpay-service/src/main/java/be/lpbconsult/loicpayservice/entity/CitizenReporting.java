@@ -1,11 +1,7 @@
 package be.lpbconsult.loicpayservice.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "citizen_reporting")
 public class CitizenReporting {
@@ -28,5 +24,45 @@ public class CitizenReporting {
 
     public boolean getIgnored() {
         return ignored;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSsin() {
+        return ssin;
+    }
+
+    public void setSsin(String ssin) {
+        this.ssin = ssin;
+    }
+
+    public Integer getRefMonth() {
+        return refMonth;
+    }
+
+    public void setRefMonth(Integer refMonth) {
+        this.refMonth = refMonth;
+    }
+
+    public String getLabels() {
+        return labels;
+    }
+
+    public void setLabels(String labels) {
+        this.labels = labels;
+    }
+
+    public boolean isIgnored() {
+        return ignored;
+    }
+
+    public void setIgnored(boolean ignored) {
+        this.ignored = ignored;
     }
 }

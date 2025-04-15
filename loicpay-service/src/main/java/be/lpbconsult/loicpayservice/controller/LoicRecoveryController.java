@@ -1,6 +1,6 @@
 package be.lpbconsult.loicpayservice.controller;
 
-import be.lpbconsult.loicpayservice.dto.LoicRecoveriesInsertRequest;
+import be.lpbconsult.loicpayservice.dto.LoicInsertRequest;
 import be.lpbconsult.loicpayservice.service.LoicRecoveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +14,8 @@ public class LoicRecoveryController {
     private LoicRecoveryService loicRecoveryService;
 
     @PostMapping("/add")
-    public void addLoicRecoveries(@RequestBody LoicRecoveriesInsertRequest request) throws Exception {
-        loicRecoveryService.createLoicRecovery(request.getBatchId(), request.getLoicRecoveries());
+    public void addLoicRecoveries(@RequestBody LoicInsertRequest request) throws Exception {
+        loicRecoveryService.createLoicRecovery(request.getBatchId(), request.getLoicRecords());
     }
 
 }

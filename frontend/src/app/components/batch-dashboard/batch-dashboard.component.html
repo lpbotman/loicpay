@@ -1,6 +1,5 @@
 <div class="header">
-
-  <mat-form-field *ngIf="allBatchPayments && allBatchPayments.length > 1" appearance="outline" class="compare-batch-select">
+  <mat-form-field *ngIf="allBatchPayments" appearance="outline" class="compare-batch-select">
     <mat-label>Comparaison avec</mat-label>
     <mat-select (selectionChange)="onChangeBatchCompare($event.value)">
       <mat-option [value]="null"></mat-option>
@@ -25,13 +24,22 @@
 </div>
 <div class="container flex">
   <div class="criteria-container">
-    <app-match-ssin [batchId]="batchId" [compareBatchId]="selectedBatchId"></app-match-ssin>
+    <app-match-ssin [batchId]="batchId" [compareBatchId]="selectedBatchId" [source]="'payment'"></app-match-ssin>
   </div>
   <div class="criteria-container">
-   <app-match-payment-plan [batchId]="batchId"></app-match-payment-plan>
+   <app-match-plan [batchId]="batchId" [compareBatchId]="selectedBatchId" [source]="'payment'"></app-match-plan>
   </div>
   <div class="criteria-container">
-   <app-match-payment-amount [batchId]="batchId"></app-match-payment-amount>
+   <app-match-amount [batchId]="batchId" [compareBatchId]="selectedBatchId" [source]="'payment'"></app-match-amount>
+  </div>
+  <div class="criteria-container">
+    <app-match-ssin [batchId]="batchId" [compareBatchId]="selectedBatchId" [source]="'recovery'"></app-match-ssin>
+  </div>
+  <div class="criteria-container">
+    <app-match-plan [batchId]="batchId" [compareBatchId]="selectedBatchId" [source]="'recovery'"></app-match-plan>
+  </div>
+  <div class="criteria-container">
+    <app-match-amount [batchId]="batchId" [compareBatchId]="selectedBatchId" [source]="'recovery'"></app-match-amount>
   </div>
 </div>
 

@@ -42,6 +42,7 @@ export class MatchSsinComponent implements OnInit, OnDestroy, OnChanges{
 
   @Input() batchId!: number;
   @Input() compareBatchId?: number | null;
+  @Input() source: 'payment' | 'recovery' = 'payment';
 
   displayedColumns: string[] = ['desc', 'value'];
   dataSource: { desc: string, value: number, compareValue?: number | null, percent?: number, comparePercent?: number | null, filter?: string}[] = [];
@@ -59,10 +60,12 @@ export class MatchSsinComponent implements OnInit, OnDestroy, OnChanges{
 
   constructor(private reportingService: ReportingBatchService) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void{
+    this.prepareData();
+  }
 
+  private async prepareData() {
     try {
-      console.log('ngOnInit MatchSsinComponent', this.compareBatchId);
       const response: any = await this.loadData(this.batchId);
       const responseCompare: any = this.compareBatchId ? await this.loadData(this.compareBatchId) : null;
 
@@ -75,7 +78,7 @@ export class MatchSsinComponent implements OnInit, OnDestroy, OnChanges{
         {desc: 'Nombre de citoyens distincts dans MFX', value: response.mfxCount, compareValue: responseCompare?.mfxCount},
         {desc: 'Nombre de citoyens exclusifs LOIC', value: response.loicExclu, percent: response.loicExclu / response.loicCount * 100,
           compareValue: responseCompare ? responseCompare.loicExclu : null,
-          comparePercent: responseCompare ? (responseCompare.loicExclu / responseCompare.loicCount * 100) : null,filter: 'exclu-loic' },
+          comparePercent: responseCompare ? (responseCompare.loicExclu / responseCompare.loicCount * 100) : null,filter: this.source+'-exclu-loic' },
         {desc: 'Nombre de citoyens exclusifs MFX', value: response.mfxExclu, percent: response.mfxExclu / response.mfxCount * 100,
           compareValue: responseCompare?.mfxExclu,
           comparePercent: responseCompare ? (responseCompare.mfxExclu / responseCompare.mfxCount * 100) : null},
@@ -102,18 +105,24 @@ export class MatchSsinComponent implements OnInit, OnDestroy, OnChanges{
     }
   }
 
-
   private loadData(batchId: number) {
     return new Promise((resolve, reject) => {
-      this.reportingService.getMatchSSIN(batchId)
+      let request$;
+
+      if (this.source === 'payment') {
+        request$ = this.reportingService.getPaymentMatchSSIN(batchId);
+      } else if (this.source === 'recovery') {
+        request$ = this.reportingService.getRecoveryMatchSSIN(batchId);
+      } else {
+        reject(new Error(`Source inconnue: ${this.source}`));
+        return;
+      }
+
+      request$
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          next: (response) => {
-            resolve(response);
-          },
-          error: (err) => {
-            reject(err);
-          }
+          next: (response) => resolve(response),
+          error: (err) => reject(err)
         });
     });
   }
@@ -129,12 +138,11 @@ export class MatchSsinComponent implements OnInit, OnDestroy, OnChanges{
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['compareBatchId']) {
-      console.log('compareBatchId a changé :', changes['compareBatchId'].currentValue);
       if(this.compareBatchId === null) {
         this.displayedColumns = ['desc', 'value'];
       } else {
         this.displayedColumns = ['desc', 'value', 'compareValue'];
-        this.ngOnInit();
+        this.prepareData();
       }
     }
   }

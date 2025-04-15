@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="loicpay-batch" uuid="a99e40d8-8974-42c1-b911-a7b68dbd974a">
+    <data-source source="LOCAL" name="loicpay-batch" uuid="d0d62ee9-b0e5-4476-a941-fb7455c47264">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

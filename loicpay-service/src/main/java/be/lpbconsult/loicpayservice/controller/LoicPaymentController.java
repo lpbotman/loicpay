@@ -1,11 +1,9 @@
 package be.lpbconsult.loicpayservice.controller;
 
-import be.lpbconsult.loicpayservice.dto.LoicPaymentsInsertRequest;
+import be.lpbconsult.loicpayservice.dto.LoicInsertRequest;
 import be.lpbconsult.loicpayservice.service.LoicPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/payment/loic")
@@ -16,8 +14,9 @@ public class LoicPaymentController {
     private LoicPaymentService loicPaymentService;
 
     @PostMapping("/add")
-    public void addLoicPayments(@RequestBody LoicPaymentsInsertRequest request) throws Exception {
-        loicPaymentService.createLoicPayment(request.getBatchId(), request.getLoicPayments());
+    public void addLoicPayments(@RequestBody LoicInsertRequest request) throws Exception {
+        System.out.println("LoicPaymentController - addLoicPayments " + request.getBatchId());
+        loicPaymentService.createLoicPayment(request.getBatchId(), request.getLoicRecords());
     }
 
 }

@@ -6,6 +6,7 @@
       "citizen_name": "Citoyen",
       "gross_amount_paid": "Brut",
       "withholding_tax_amount_paid": "Prec.",
+      "withholding_tax": "Prec.",
       "net_paid": "Net",
       "recov_gross_amount": "Recov. Brut",
       "recov_net_amount": "Recov. Net",

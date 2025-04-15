@@ -1,5 +1,11 @@
 <div class="header">
-  <p>Correspondance des citoyens</p>
+  <p>
+    @if (source === 'payment') {
+      Paiements : Correspondance des citoyens
+    } @else {
+      Retenues : Correspondance des citoyens
+    }
+  </p>
 </div>
 <div class="container flex flex-column" *ngIf="!isloaded">
   <mat-spinner></mat-spinner>

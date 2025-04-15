@@ -44,11 +44,25 @@
           <a
             [routerLink]="['/citizen-comparator', batchId, element.filter+'-net']"
             [queryParams]="element.params">
-            {{ element.gross | flexibleNumber }}
+            {{ element.net | flexibleNumber }}
           </a>
         } @else {
-          {{ element.gross | flexibleNumber }}
+          {{ element.net | flexibleNumber }}
         }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="compareGross" *ngIf="compareBatchId">
+      <th mat-header-cell *matHeaderCellDef class="compare-column" > Comparaison brut </th>
+      <td mat-cell *matCellDef="let element" class="compare-column">
+        {{element.compareGross | flexibleNumber}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="compareNet" *ngIf="compareBatchId">
+      <th mat-header-cell *matHeaderCellDef class="compare-column" > Comparaison net </th>
+      <td mat-cell *matCellDef="let element" class="compare-column">
+        {{element.compareNet | flexibleNumber}}
       </td>
     </ng-container>
 

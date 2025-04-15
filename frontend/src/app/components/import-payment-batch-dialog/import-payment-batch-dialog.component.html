@@ -73,8 +73,8 @@
         <mat-progress-bar #fileProgress mode="determinate" [value]="progressInfo.progress" style="width: 100%;"></mat-progress-bar>
       </span>
 
-      <div class="import-actions">
-        <button mat-raised-button color="primary" (click)="submit()" [disabled]="isImporting">Importer</button>
+      <div class="import-actions"><!--[disabled]="isImporting"-->
+        <button mat-raised-button color="primary" (click)="submit()" >Importer</button>
         <button mat-button (click)="close()">Annuler</button>
       </div>
     </mat-step>

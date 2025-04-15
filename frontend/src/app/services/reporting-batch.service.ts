@@ -9,19 +9,34 @@ import {API_BASE_URL} from "../utils/params";
 export class ReportingBatchService {
   constructor(private http: HttpClient) {}
 
-  getMatchSSIN(batchId: number) : Observable<any> {
-    return this.http.get(API_BASE_URL+'/reporting/match-ssin?batchId='+batchId);
+  getPaymentMatchSSIN(batchId: number) : Observable<any> {
+    return this.http.get(API_BASE_URL+'/reporting/payment/match-ssin?batchId='+batchId);
   }
 
-  getMatchPaymentPlan(batchId: number) : Observable<any> {
-    return this.http.get(API_BASE_URL+'/reporting/match-payment-plan?batchId='+batchId);
+  getPaymentMatchPaymentPlan(batchId: number) : Observable<any> {
+    return this.http.get(API_BASE_URL+'/reporting/payment/match-plan?batchId='+batchId);
   }
 
   getMatchPaymentAmount(batchId: number, amountType: string, intervalLow: number = 0, intervalHigh: number = 0) : Observable<any> {
     if (amountType !== 'gross' && amountType !== 'net') {
       throw new Error('Amount type invalide');
     }
-    return this.http.get(API_BASE_URL+'/reporting/amount-diff?batchId='+batchId+'&amountType='+amountType+'&intervalLow='+intervalLow+'&intervalHigh='+intervalHigh);
+    return this.http.get(API_BASE_URL+'/reporting/payment/amount-diff?batchId='+batchId+'&amountType='+amountType+'&intervalLow='+intervalLow+'&intervalHigh='+intervalHigh);
+  }
+
+  getRecoveryMatchSSIN(batchId: number) : Observable<any> {
+    return this.http.get(API_BASE_URL+'/reporting/recovery/match-ssin?batchId='+batchId);
+  }
+
+  getRecoveryMatchPaymentPlan(batchId: number) : Observable<any> {
+    return this.http.get(API_BASE_URL+'/reporting/recovery/match-plan?batchId='+batchId);
+  }
+
+  getMatchRecoveryAmount(batchId: number, amountType: string, intervalLow: number = 0, intervalHigh: number = 0) : Observable<any> {
+    if (amountType !== 'gross' && amountType !== 'net') {
+      throw new Error('Amount type invalide');
+    }
+    return this.http.get(API_BASE_URL+'/reporting/recovery/amount-diff?batchId='+batchId+'&amountType='+amountType+'&intervalLow='+intervalLow+'&intervalHigh='+intervalHigh);
   }
 
   getCitizensByCriteria(reportingPaginatedRequest: ReportingPaginatedRequest) : Observable<PaginatedCitizenReporting> {
