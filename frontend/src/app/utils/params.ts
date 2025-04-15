@@ -10,11 +10,19 @@ export const filterTocriteria = [
     criteria: 'getRecoveryExcluSSINFromLoic'
   },
   {
-    filter: 'amount-diff-gross',
-    criteria: 'getCitizenGrossAmountDiff'
+    filter: 'payment-amount-diff-gross',
+    criteria: 'getCitizenPaymentGrossAmountDiff'
   },
   {
-    filter: 'amount-diff-net',
-    criteria: 'getCitizenNetAmountDiff'
+    filter: 'recovery-amount-diff-gross',
+    criteria: 'getCitizenRecoveryGrossAmountDiff'
+  },
+  {
+    filter: 'payment-amount-diff-net',
+    criteria: 'getCitizenPaymentNetAmountDiff'
+  },
+  {
+    filter: 'recovery-amount-diff-net',
+    criteria: 'getCitizenRecoveryNetAmountDiff'
   },
 ];

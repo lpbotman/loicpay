@@ -7,7 +7,6 @@ import {MatButton} from "@angular/material/button";
 import {FileUploadService} from "../../services/fileupload.service";
 import * as Papa from 'papaparse';
 import {MatProgressBar} from "@angular/material/progress-bar";
-import {NgIf} from "@angular/common";
 import {FileUploadPickerComponent} from "../utils/file-upload-picker/file-upload-picker.component";
 import {PaymentBatchService} from "../../services/payment-batch.service";
 import {UploadFileType} from "../../enums/upload-file-type.enum";
@@ -149,19 +148,19 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
           const recordsPayments = linesPayments.map(line => this.parseFixedWidthLinePayment(line));
           const recordsRecoveries = linesRecoveries.map(line => this.parseFixedWidthLineRecovery(line));
 
+          console.log('Records Payments', recordsRecoveries);
           // Envois séquentiels
           await this.uploadChunksSequentially(recordsPayments, UploadFileType.MFX_PAYMENT);
           await this.uploadChunksSequentially(recordsRecoveries, UploadFileType.MFX_RECOVERY);
 
-          console.log('Tous les envois terminés.');
-          resolve(); // Résolution de la Promise quand tout est fini
+          resolve();
         } catch (error) {
-          reject(error); // Gestion des erreurs
+          reject(error);
         }
       };
 
       reader.onerror = (error) => {
-        reject(error); // En cas d'erreur de lecture du fichier
+        reject(error);
       };
 
       reader.readAsText(file);
@@ -180,7 +179,6 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
     return new Promise((resolve, reject) => {
       this.fileUploadService.uploadParsedData(this.currentBatchId, chunk, uploadFileType).subscribe({
         next: (response) => {
-          console.log('Chunk envoyé avec succès:', response);
           this.progressInfo.progress += chunk.length / this.progressInfo.total * 100;
           resolve();
         },
@@ -227,7 +225,6 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
     return new Promise((resolve, reject) => {
       Papa.parse(chunk.join('\n'), {
         complete: (result) => {
-          console.log('Données envoyées avec succès:', result);
           this.fileUploadService.uploadParsedData(this.currentBatchId, result.data, uploadFileType).subscribe({
             next: (response) => {
               this.progressInfo.progress += chunk.length / this.progressInfo.total * 100;
@@ -299,32 +296,32 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
 
   parseFixedWidthLineRecovery(line: string): any {
     const get = (start: number, end: number) => {
-      const value = line.slice(start - 1, end).trim();
+      const value = line.slice(start -1, end).trim();
       return value === '' ? null : value;
     }
 
     return {
-      rec: get(0, 1),
-      bc: get(1, 2),
-      nom: get(3, 33),
-      ssin: get(93, 106),
-      refMonth: this.parseDate(get(160, 167),'MM/YYYY'),
-      mois_pay: this.parseDate(get(167, 174), 'YYYYMMDD'),
-      ret_net: get(274, 282),
-      ret_bedrag: get(254, 264),
-      ret_saldo: get(264, 274),
-      ret_date_val: this.parseDate(get(274, 282), 'YYYYMMDD'),
-      ret_type: get(282, 284),
-      titulaire: get(284, 299),
-      num_C31: get(299, 313),
-      ret_prec: get(313, 319),
-      ret_schuld_nr: get(319, 329),
-      ret_cpt: get(329, 339),
-      ret_iban: get(339, 373),
-      ret_bic: get(373, 384),
-      ret_cc: get(384, 385),
-      ret_instantie: get(385, 387),
-      ret_bce: get(387, 401),
+      rec: get(1, 1),
+      bc: get(2, 3),
+      nom: get(4, 33),
+      ssin: get(94, 106),
+      refMonth: this.parseDate(get(161, 167),'MM/YYYY'),
+      mois_pay: this.parseDate(get(168, 174), 'MM/YYYY'),
+      ret_net: get(175, 200),
+      ret_bedrag: get(255, 264),
+      ret_saldo: get(265, 274),
+      ret_date_val: this.parseDate(get(275, 282), 'YYYYMMDD'),
+      ret_type: get(283, 284),
+      titulaire: get(285, 299),
+      num_C31: get(300, 313),
+      ret_prec: get(314, 319),
+      ret_schuld_nr: get(320, 329),
+      ret_cpt: get(330, 339),
+      ret_iban: get(340, 373),
+      ret_bic: get(374, 384),
+      ret_cc: get(385, 385),
+      ret_instantie: get(386, 387),
+      ret_bce: get(388, 401),
     };
   }
 
@@ -353,23 +350,21 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
       fileReader.onload = (e: any) => {
         try {
           const fileContent = e.target.result;
-          const lines = fileContent.split('\n'); // Diviser le contenu du fichier par lignes
-          totalLines = lines.length; // Calculer le nombre de lignes
-          resolve(totalLines); // Résoudre la promesse avec le total des lignes
+          const lines = fileContent.split('\n');
+          totalLines = lines.length;
+          resolve(totalLines);
         } catch (error) {
-          reject(error); // Rejeter la promesse en cas d'erreur
+          reject(error);
         }
       };
 
       fileReader.onerror = (error) => {
-        reject(error); // Rejeter la promesse en cas d'erreur de lecture du fichier
+        reject(error);
       };
 
-      fileReader.readAsText(file); // Lire le fichier comme texte
+      fileReader.readAsText(file);
     });
   }
-
-
 
   protected readonly UploadFileType = UploadFileType;
 

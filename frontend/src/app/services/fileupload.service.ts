@@ -14,7 +14,6 @@ import {API_BASE_URL} from "../utils/params";
 export class FileUploadService {
   constructor(private http: HttpClient) {}
 
-  // Méthode pour analyser un fichier CSV en utilisant PapaParse
   parseCsvFile(file: File): Observable<any> {
     return new Observable((observer) => {
       Papa.parse(file, {
