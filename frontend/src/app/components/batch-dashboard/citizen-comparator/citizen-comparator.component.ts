@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit } from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -9,7 +9,7 @@ import {
   MatTable
 } from "@angular/material/table";
 import {
-  MatChip, MatChipGrid, MatChipInput,
+  MatChip,
   MatChipInputEvent,
 } from "@angular/material/chips";
 import {MatIcon} from "@angular/material/icon";
@@ -21,11 +21,17 @@ import {debounceTime, Subject, switchMap, takeUntil} from "rxjs";
 import {CitizenReporting} from "../../../dtos/CitizenReporting.dto";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {TranslatePipe} from "@ngx-translate/core";
-import {MatButton, MatIconButton} from "@angular/material/button";
+import { MatIconButton} from "@angular/material/button";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {FormsModule} from "@angular/forms";
 import {ReportingPaginatedRequest} from "../../../dtos/ReportingPaginatedRequest.dto";
 import {filterTocriteria} from "../../../utils/params";
+import {MatSelect} from "@angular/material/select";
+import {MatOption} from "@angular/material/core";
+import {MatFormField, MatLabel} from "@angular/material/input";
+import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
+import {MatDialog} from "@angular/material/dialog";
+import {AddCategoryDialogComponent} from "../../error-category/add-category-dialog/add-category-dialog.component";
 
 @Component({
   selector: 'app-citizen-comparator',
@@ -47,11 +53,16 @@ import {filterTocriteria} from "../../../utils/params";
     MatIconButton,
     NgIf,
     MatChip,
-    MatChipInput,
-    MatChipGrid,
     MatSlideToggle,
     FormsModule,
     RouterLink,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatIconButton,
+    MatLabel,
+    MatMenu,
+    MatMenuTrigger,
   ],
   standalone: true,
   templateUrl: './citizen-comparator.component.html',
@@ -76,10 +87,12 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
 
   private rowSubjects: Map<string, Subject<{ ssin: string, refMonth: number, labels: string | null, isIgnored: boolean }>> = new Map();
 
+  categories = ['Catégorie 1 Catégorie 1', 'Catégorie 2', 'Catégorie 3'];
 
   private destroy$ = new Subject<void>();
 
-  constructor(private route: ActivatedRoute, private reportingService: ReportingBatchService) {
+  constructor(private route: ActivatedRoute, private reportingService: ReportingBatchService,
+              private dialogNewCategory: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -138,6 +151,7 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
 
   removeLabel(row: any): void {
     row.labels = null;
+    row.isIgnored = false;
     this.updateRow(row);
   }
 
@@ -196,6 +210,27 @@ export class CitizenComparatorComponent implements OnInit, OnDestroy {
       a.download = 'citizen-'+ this.filter+'.csv';
       a.click();
       window.URL.revokeObjectURL(url);
+    });
+  }
+
+  onSelectCategory(event: any, row: CitizenReporting) {
+    row.labels = event.value;
+    row.isIgnored = true;
+    this.updateRow(row);
+  }
+
+  openAddCategoryDialog(row: CitizenReporting) {
+    const dialogRef = this.dialogNewCategory.open(AddCategoryDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        row.labels = result;
+        row.isIgnored = true;
+        this.categories.push(result);
+        this.updateRow(row);
+      }
     });
   }
 }

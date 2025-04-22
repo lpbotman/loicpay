@@ -55,3 +55,89 @@ mat-chip mat-icon {
   font-size: 20px;
   color: #757575;
 }
+/* Style du bouton et du menu */
+.action-button {
+  position: relative;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  background-color: white !important;
+  width: 300px;
+  padding:10px 15px;
+}
+
+::ng-deep .custom-menu {
+  position: relative;
+  right: 50px;
+  top: 65px;
+  overflow: visible !important;
+  width: 350px;
+  max-width: 350px !important;
+  padding-top: 10px;
+  border-radius: 10px !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+
+mat-form-field {
+  width: 300px;
+}
+
+mat-select {
+  width: 100%;
+}
+
+
+.category-select {
+  width: 100%;
+  font-size: 12px !important;
+
+  ::ng-deep .mat-select-value {
+    font-size: 12px !important;
+  }
+
+  ::ng-deep .mat-option {
+    font-size: 12px !important;
+  }
+
+  ::ng-deep .mat-select-trigger {
+    font-size: 12px !important;
+  }
+
+}
+::ng-deep .mat-mdc-select-panel {
+  background-color: white !important;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  height: 50px !important;
+}
+
+::ng-deep .mat-mdc-select-value {
+  font-size: 12px !important;
+}
+::ng-deep .mdc-floating-label, .mat-mdc-option {
+  font-size: 12px !important;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display:none;
+}
+
+
+.paginator {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+mat-paginator {
+  padding-right: 20px;
+}
