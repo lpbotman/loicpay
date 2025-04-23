@@ -1,8 +1,8 @@
 import {Component, OnDestroy, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatDialogContent, MatDialogRef, MatDialogTitle} from "@angular/material/dialog";
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext} from "@angular/material/stepper";
-import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {MatFormField, MatInput, MatLabel, MatSuffix} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
 import {FileUploadService} from "../../services/fileupload.service";
 import * as Papa from 'papaparse';
@@ -11,6 +11,15 @@ import {FileUploadPickerComponent} from "../utils/file-upload-picker/file-upload
 import {PaymentBatchService} from "../../services/payment-batch.service";
 import {UploadFileType} from "../../enums/upload-file-type.enum";
 import {Subject, takeUntil} from "rxjs";
+import {
+  MatDatepicker,
+  MatDatepickerInput, MatDatepickerModule,
+  MatDatepickerToggle,
+} from "@angular/material/datepicker";
+import { provideNativeDateAdapter} from "@angular/material/core";
+import {MatIcon} from "@angular/material/icon";
+import { MatButtonToggleModule} from "@angular/material/button-toggle";
+
 
 @Component({
   selector: 'app-import-payment-batch-dialog',
@@ -23,17 +32,28 @@ import {Subject, takeUntil} from "rxjs";
     ReactiveFormsModule,
     MatStepLabel,
     MatFormField,
+    MatSuffix,
     MatButton,
     MatStepperNext,
     MatInput,
     MatDialogTitle,
     MatProgressBar,
     FileUploadPickerComponent,
+    MatDatepickerToggle,
+    MatDatepickerInput,
+    MatDatepicker,
+    MatButtonToggleModule,
+    MatIcon,
+    FormsModule,
+  ],
+  providers: [
+    MatDatepickerModule, provideNativeDateAdapter(),
   ],
   templateUrl: './import-payment-batch-dialog.component.html',
   standalone: true,
   styleUrl: './import-payment-batch-dialog.component.css'
 })
+
 export class ImportPaymentBatchDialogComponent implements OnDestroy {
   @ViewChild('stepper') stepper: MatStepper | undefined;
   @ViewChild('fileProgress') fileProgressBar: MatProgressBar | undefined;
@@ -43,6 +63,7 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  importName = '';
   isImporting = false;
   progressInfo = {'task': '', 'progress': 0, 'total': 0};
   totalLines = 0;
@@ -61,7 +82,9 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
     private paymentBatchService: PaymentBatchService
   ) {
     this.step0Form = this.fb.group({
-      importName: ['', Validators.required],
+      desc: [''],
+      batchDate: ['', Validators.required],
+      mode: ['', Validators.required],
     });
 
     this.step1Form = this.fb.group({
@@ -90,7 +113,7 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
     console.log('Total de lignes:', this.totalLines);
 
     const id = await new Promise<number>((resolve, reject) => {
-      this.paymentBatchService.createBatchPayment(this.step0Form.get('importName')?.value)
+      this.paymentBatchService.createBatchPayment(this.importName)
         .subscribe({
           next: (id: number) => resolve(id),
           error: (err) => reject(err)
@@ -131,6 +154,21 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
         this.step2Form.get('filePayment')?.setValue(file);
         this.paymentFileMfx = file;
       }
+  }
+
+  get generatedBatchName(): string {
+    let suffixe = this.step0Form.get('desc')?.value
+    let batchDate = this.step0Form.get('batchDate')?.value
+    let mode = this.step0Form.get('mode')?.value
+    if (!batchDate || !mode) return '';
+    const dateStr = new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(batchDate);
+    const suffix = suffixe ? ` - ${suffixe}` : '';
+    this.importName = `Batch du ${dateStr} (${mode === 'EXEC' ? 'Exécution' : 'Simulation' })${suffix}`;
+    return this.importName;
   }
 
   async importMfxFile(file: File): Promise<void> {
@@ -367,6 +405,7 @@ export class ImportPaymentBatchDialogComponent implements OnDestroy {
   }
 
   protected readonly UploadFileType = UploadFileType;
+  mode: any;
 
   ngOnDestroy(): void {
     this.destroy$.next();

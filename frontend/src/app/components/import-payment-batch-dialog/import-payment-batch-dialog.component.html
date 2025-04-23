@@ -7,10 +7,43 @@
       <form [formGroup]="step0Form">
         <ng-template matStepLabel>Nom de l'import</ng-template>
         <div class="stepper-content">
-          <mat-form-field appearance="outline" style="width:100%">
-            <mat-label>Nom de l'import</mat-label>
-            <input matInput formControlName="importName" />
-          </mat-form-field>
+
+          <div class="flex flex-row gap-20">
+
+            <mat-button-toggle-group
+              name="mode"
+              aria-label="Choix du mode"
+              class="mode-toggle"
+              formControlName="mode"
+            >
+              <mat-button-toggle value="SIMU">
+                <mat-icon>science</mat-icon>
+                <span class="label">Simulation</span>
+              </mat-button-toggle>
+
+              <mat-button-toggle value="EXEC">
+                <mat-icon>play_arrow</mat-icon>
+                <span class="label">Exécution</span>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <mat-form-field appearance="outline" style="width:150px;" subscriptSizing="dynamic">
+              <mat-label>Date du run</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="batchDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width:250px">
+              <mat-label>Description (Facultatif)</mat-label>
+              <input matInput formControlName="desc"/>
+            </mat-form-field>
+          </div>
+
+          <br/>
+          <p class="mt-2">
+            <b>Nom du batch :</b> {{ generatedBatchName }}
+          </p>
         </div>
         <div class="actions">
           <button mat-button matStepperNext [disabled]="!step0Form.valid">Suivant</button>
